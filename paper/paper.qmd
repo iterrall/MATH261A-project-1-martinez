@@ -1,13 +1,16 @@
 ---
-title: "Title"
-subtitle: "Subtitle"
-author: "Your Name"
-thanks: "Project repository available at: [https://github.com/peteragao/MATH261A-project-template](https://github.com/peteragao/MATH261A-project-template)."
+title: "Linking Education, Unemployment, and Poverty"
+subtitle: "Insights from Californias CalEnviroScreen Data"
+author: "Isis Martinez"
+thanks: "Project repository available at: [https://github.com/iterrall/MATH261A-project-1-martinez](https://github.com/iterrall/MATH261A-project-1-martinez)."
 date: today
 date-format: long
-abstract: "Abstract here."
-format: pdf
+abstract: "This project investigates the relationship between low educational attainment in adults and poverty across California communities using data from CalEnviroScreen 4.0, which is a statewide environmental health and socioeconomic screening tool developed by the California Office of Environmental Health Hazard Assessment (OEHHA). We use simple linear regression to model poverty rates as a function of percentage of adults living without a college degree, then extend the analysis by incorporating other variables such as unemployment and exposure to pollution. Results indicate that low educational attainment is associated with higher poverty levels, even when accounting for unemployment. Diagnostic checks suggest the linear model provides a reasonable fit, though influential observations highlight geographic variation in socioeconomic vulnerability. {FIX THIS LATER}***CalEnviroScreen is a powerful tool for addressing historical and continued inequality. By linking socioeconomic factors such as educational attainment with poverty, our analysis illustrates how the tool can inform efforts by government agencies, non-governmental organizations, and community advocates to reduce pollution, protect public health, and advance environmental justice. This type of work contributes to the broader goal of making the California Dream accessible for all.***"
+output: 
+  pdf_document:
+    latex_engine: xelatex
 bibliography: references.bib
+body-footer: Math 261A - Regression Theory and Methods | Fall 2025 Project 1
 ---
 
 ```{r}
@@ -21,7 +24,64 @@ library(palmerpenguins)
 
 # Introduction
 
-# Data
+# Data {#sec-load_data}
+```{r}
+library(tidytuesdayR); library(dplyr); library(ggplot2);library(broom)
+library(scales); library(patchwork); library(ggrepel); library(qqplotr)
+
+raw_data <- read.csv("CalEnviroScreen_4.0_Results.csv") # load data
+
+#coerce to numeric & drop NAs
+to_analyze_df_3vars <- raw_data %>%
+  transmute(
+    pov = as.numeric(pov),
+    edu = as.numeric(edu),
+    unemp = as.numeric(unemp)
+  ) %>%
+  filter(!is.na(pov), !is.na(edu), !is.na(unemp))
+
+to_analyze_df <- raw_data %>%
+  transmute(
+    pov   = as.numeric(pov),
+    edu   = as.numeric(edu)
+    ) %>%
+  filter(!is.na(pov), !is.na(edu))
+```
+
+
+```{r fig-education-scatter}
+# Model
+set.seed(123) 
+lm_fit <- lm(pov ~ edu, data=to_analyze_df_3vars) #predictor (x): edu, outcome (y): pov
+coefs <- coef(lm_fit)
+intercept <- coef(lm_fit)[1]
+slope <- coef(lm_fit)[2] 
+r2 <- summary(lm_fit)$r.squared
+
+gl <- glance(lm_fit)
+n  <- stats::nobs(lm_fit)
+
+eq_text <- sprintf(" regression line: y = %.4f + %.4f x", intercept, slope, r2) # create equation text
+
+#scatter plot with regression
+ggplot(to_analyze_df_3vars, aes(x = edu, y = pov, color=unemp)) + #plot
+  geom_point(alpha = 0.7, size = .8) +
+  scale_color_viridis_c(name = "Unemployment (%)", option = "plasma")+
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  annotate("label", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1,
+           label = eq_text, label.size = .2, alpha = .5) +
+  labs(
+    title    = "Educations vs. Poverty",
+    subtitle = "Simple regression scatter plot of percentage of , colored by unemployment",
+    x        = "Adults without a high school diploma (%)",
+    y        = "Population under poverty line (%)",
+    caption  = "Source: OEHHA CalEnviroScreen 4.0"
+  ) +
+  theme_pubr()
+
+print(eq_text)
+summary(lm_fit)
+```
 
 # Methods
 

@@ -1,30 +1,316 @@
 ---
 title: "Math261A_Project1"
-author: "Isis Martinez"
-date: "2025-09-08"
-output: pdf_document
+subtitle: "Subtitle"
+author: "Isis Martinez, SJSU ID: "
+thanks: "Project repository available at"
+date: today
+date-format: long
+abstract: "This project investiga."
+output: 
+  pdf_document:
+    latex_engine: xelatex
+bibliography: references.bib
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+IMPORTANT NOTES
+citation: [@palmer_penguins] --> references.bib file
+number of rows: `r nrow(adelie)` --> refer to results of analysis directly in text
+The estimated slope parameter is $b_1=$ `r round(coefficients(lm_fit)[2],3)` --> refer to slope parameters directly in text`
+
+
+```{r} 
+#can include r and python
+#| include: false
+#| warning: false
+#| message: false 
+# load libraries
+library(tidyverse)
+library(ggpubr)
+library(patchwork)
+
+
 ```
 
-## R Markdown
+```{r, include=FALSE, warning=FALSE, message=FALSE}
+#can include r and python
+library(tidytuesdayR)
+library(dplyr)
+library(ggplot2)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{#Predictor (independent variable): unemployment (unemp)}
+#Outcome (dependent variable): cardiovascular disease prevalence (cvd)
 
-```{r cars}
-summary(cars)
+#other options
+#
+```
+1. Abstract/Introduction
+2. Background and data
+3. Methods
+4. Results
+5. Discussion
+
+
+
+
+# Abstract
+# Introduction
+
+What is my big question?
+You should care about the answer to this question because...
+We expect that...
+@sec-data introduces the data used in this analysis... @sec-methods describes the model... 
+
+
+# Data {#sec-load_data}
+```{r}
+library(tidytuesdayR); library(dplyr); library(ggplot2);library(broom)
+library(scales); library(patchwork); library(ggrepel); library(qqplotr)
+
+raw_data <- read.csv("C:/Users/terra/Documents/Schoolwork/MATH261A_Fa25/project1/paper/CalEnviroScreen_4.0_raw_data.csv") # load data
+
+#coerce to numeric & drop NAs
+to_analyze_df_3vars <- raw_data %>%
+  transmute(
+    pov = as.numeric(pov),
+    edu = as.numeric(edu),
+    unemp = as.numeric(unemp)
+  ) %>%
+  filter(!is.na(pov), !is.na(edu), !is.na(unemp))
+
+to_analyze_df <- raw_data %>%
+  transmute(
+    pov   = as.numeric(pov),
+    edu   = as.numeric(edu)
+    ) %>%
+  filter(!is.na(pov), !is.na(edu))
+```
+
+
+```{r fig-education-scatter}
+# Model
+set.seed(123) 
+lm_fit <- lm(pov ~ edu, data=to_analyze_df_3vars) #predictor (x): edu, outcome (y): pov
+coefs <- coef(lm_fit)
+intercept <- coef(lm_fit)[1]
+slope <- coef(lm_fit)[2] 
+r2 <- summary(lm_fit)$r.squared
+
+gl <- glance(lm_fit)
+n  <- stats::nobs(lm_fit)
+
+eq_text <- sprintf(" regression line: y = %.4f + %.4f x", intercept, slope, r2) # create equation text
+
+#scatter plot with regression
+ggplot(to_analyze_df_3vars, aes(x = edu, y = pov, color=unemp)) + #plot
+  geom_point(alpha = 0.7, size = .8) +
+  scale_color_viridis_c(name = "Unemployment (%)", option = "plasma")+
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  annotate("label", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1,
+           label = eq_text, label.size = .2, alpha = .5) +
+  labs(
+    title    = "Educations vs. Poverty",
+    subtitle = "Simple regression scatter plot of percentage of , colored by unemployment",
+    x        = "Adults without a high school diploma (%)",
+    y        = "Population under poverty line (%)",
+    caption  = "Source: OEHHA CalEnviroScreen 4.0"
+  ) +
+  theme_pubr()
+
+print(eq_text)
+summary(lm_fit)
+```
+
+```{r fig-adelie-scatter}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-cap: "Scatter plot of flipper length, in mm (x-axis) and body mass in grams (y-axis) with fitted linear regression model."
+data(penguins)
+adelie <- penguins |>
+  filter(species == "Adelie" & sex == "female")
+ggplot(adelie, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point() +
+  # helpful function for adding linear regression line below
+  geom_smooth(method = "lm", se  = FALSE) +
+  # helpful function from ggpubr package for labeling line below
+  stat_regline_equation(label.x = 197, label.y = 3400) +
+  theme_pubr() +
+  ylab("Body mass (grams)") +
+  xlab("Flipper length (mm)") +
+  ggtitle("Comparison of flipper length and body mass\nfor female Adelie penguins")
+```
+  1) describe the observational units of the dataset; 
+  2) introduce and explain all relevant variables; 
+  3) describe any relevant details about how the data were collected or transformed; 
+  4) describe alternative/additional sources of data;
+  5) highlight any critical characteristics of the data using visualizations or summary tables. A good rule of thumb: for every variable that is relevant for your analysis, describe how it is calculated, whether there are any limitations related to missingness or measurement error, and provide summary visualizations/tables if
+necessary.
+
+# Data {#sec-methods}
+Methods. The paper should present any model or statistical methods clearly using
+mathematical notation and plain English explanations. Every symbol and component
+of the model should be introduced and described. Your target reader should
+be a peer in this class. This section must clearly describe any relevant assumptions
+and whether they are met. Describe possible limitations of your analysis. This section
+should describe the software used for implementation. This section should
+also include any necessary steps taken for model selection and validation.
+
+#Results. 
+The results section should describe the fitted model and its implications.
+This section should include relevant tables, graphs, and quantitative results, as well
+as plain English explanations of all of these components. Clearly explain what the
+model results show and connect your results to the central research question(s) and
+their broader context.
+g. References. The text should include in-text citations as well as a reference list for
+all sources, including any data, software, and relevant literature. You are advised
+to use BiBTeX for compling your references. All citations should be properly formatted
+according to an appropriate style guide.
+
+
+
+```{r}
+head(raw_data)
+```
+MORE CODE:
+```{r}
+library(dplyr); library(ggplot2); library(lmtest); library(sandwich)
+library(splines); library(broom); library(nlme); library(tidyr)
+
+# --- data
+raw <- read.csv("CalEnviroScreen_4.0_Results.csv")
+dat <- raw %>% transmute(pov = as.numeric(pov), edu = as.numeric(edu)) %>% drop_na()
+
+# base linear model
+m_lin <- lm(pov ~ edu, data = dat)
+sum_lin <- summary(m_lin)
+
+# diagnostics: heterosk., nonlinearity
+bp <- bptest(m_lin)                                    # heteroskedasticity
+m_ns <- lm(pov ~ ns(edu, df = 3), data = dat)          # spline check (nonlinearity)
+anova_lin_vs_spline <- anova(m_lin, m_ns)              # p > .05 -> linearity is fine
+rst <- resettest(m_lin, power = 2:3, type = "fitted")  # general misspec test
+
+# robust HC3 inference (makes model simple & interpretable)
+Vhc3 <- vcovHC(m_lin, type = "HC3")
+rob  <- coeftest(m_lin, vcov = Vhc3)
+crit <- qt(0.975, df = m_lin$df.residual)
+rob_ci <- cbind(Estimate = coef(m_lin),
+                `Robust SE (HC3)` = sqrt(diag(Vhc3)),
+                `Lower 95%` = coef(m_lin) - crit*sqrt(diag(Vhc3)),
+                `Upper 95%` = coef(m_lin) + crit*sqrt(diag(Vhc3)))
+
+print(sum_lin); print(bp); print(anova_lin_vs_spline); print(rst)
+print(rob); print(round(rob_ci, 4))
+
+# options 1: transform Y only (variance stabilization, keep linear in x)
+m_sqrtY <- lm(sqrt(pov) ~ edu, data = dat)
+bp_sqrt <- bptest(m_sqrtY)     # if this is still tiny, robust SE is still fine
+summary(m_sqrtY); print(bp_sqrt)
+
+# obtion 2: quadratic term (1 predictor, slight curvature allowed)
+m_quad <- lm(pov ~ edu + I(edu^2), data = dat)
+anova_lin_vs_quad <- anova(m_lin, m_quad)  # if p < .05, tiny curvature helps
+summary(m_quad); print(anova_lin_vs_quad)
+
+# Option 3: simple WLS (variance grows with mean -> weight by 1/fit^2 as a rough fix)
+fit0 <- fitted(m_lin)
+w    <- 1 / pmax(fit0^2, quantile(fit0^2, 0.01))  # avoid extreme weights
+w    <- w / mean(w)
+m_wls <- lm(pov ~ edu, data = dat, weights = w)
+summary(m_wls); bptest(m_wls)
+
+
+
+# Plots (raw model)
+eq <- sprintf("y = %.3f + %.3f x (R^2 = %.3f)", coef(m_lin)[1], coef(m_lin)[2], sum_lin$r.squared)
+p1 <- ggplot(dat, aes(edu, pov)) +
+  geom_point(alpha=.5, size=.6) +
+  geom_smooth(method="lm", se=FALSE) +
+  annotate("label", x=-Inf, y=Inf, hjust=-0.05, vjust=1.1, label=eq) +
+  labs(x="% adults without HS diploma (edu)", y="Poverty (%)",
+       title="Poverty vs Education: raw linear fit") +
+  theme_minimal()
+
+resid_df <- data.frame(fit=fitted(m_lin), res=resid(m_lin))
+p2 <- ggplot(resid_df, aes(fit, res)) +
+  geom_point(alpha=.5, size=.6) +
+  geom_hline(yintercept=0, linetype="dashed") +
+  geom_smooth(method="loess", se=FALSE, color="orangered") +
+  labs(title="Residuals vs Fitted (raw model)")
+
+p3 <- ggplot(resid_df, aes(sample=res)) +
+  stat_qq(size=.6) + stat_qq_line() +
+  labs(title="Q–Q Plot (raw model)")
+
+print(p1); print(p2); print(p3)
+
 ```
 
 ## Including Plots
-
-You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
 ```
 
+EXTRA CODE:
+```{r}
+library(dplyr); library(lmtest); library(sandwich); library(broom)
+
+dat <- raw %>%
+  transmute(pov = as.numeric(pov), edu = as.numeric(edu)) %>%
+  tidyr::drop_na()
+
+m_raw <- lm(pov ~ edu, data = dat)
+
+# OLS summary
+summary(m_raw)
+
+# HC3 robust inference
+rob_vcov <- vcovHC(m_raw, type = "HC3")
+rob_test <- coeftest(m_raw, vcov = rob_vcov)
+rob_test
+
+# Robust 95% CIs
+crit <- qt(0.975, df = m_raw$df.residual)
+rob_se <- sqrt(diag(rob_vcov))
+rob_ci <- cbind(
+  Estimate = coef(m_raw),
+  `Robust SE (HC3)` = rob_se,
+  `Lower 95%` = coef(m_raw) - crit*rob_se,
+  `Upper 95%` = coef(m_raw) + crit*rob_se
+)
+round(rob_ci, 4)
+
+m_sqrtY <- lm(sqrt(pov) ~ edu, data = dat)
+summary(m_sqrtY)
+bptest(m_sqrtY)   # check heteroskedasticity again
+
+
+library(ggplot2)
+eq <- sprintf("y = %.3f + %.3f x (R^2 = %.3f)",
+              coef(m_raw)[1], coef(m_raw)[2], summary(m_raw)$r.squared)
+
+ggplot(dat, aes(edu, pov)) +
+  geom_point(alpha = .5, size = .6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate("label", x = -Inf, y = Inf, hjust = -0.05, vjust = 1.1, label = eq) +
+  labs(x = "% adults without HS diploma (edu)",
+       y = "Poverty (%) (pov)",
+       title = "Poverty vs Education (California census tracts)") +
+  theme_minimal()
+
+
+```
+
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Add for references:
+Info about data: https://oehha.ca.gov/sites/default/files/media/downloads/calenviroscreen/report/calenviroscreen40reportf2021.pdf
+
+
+Asthma (rate per 10,000) -->raw, percentile
+Cardiovascular Disease (heart attacks per 10,000) -->raw, percentile
+Low Birth Weight (percent) -->raw, percentile
+

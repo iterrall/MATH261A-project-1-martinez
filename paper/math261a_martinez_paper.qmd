@@ -1,0 +1,226 @@
+---
+title: "Linking Education, Unemployment, and Poverty"
+subtitle: "Insights from Californias CalEnviroScreen Data"
+author: "Isis Martinez"
+thanks: "Project repository available at: [https://github.com/iterrall/MATH261A-project-1-martinez](https://github.com/iterrall/MATH261A-project-1-martinez)."
+date: today
+date-format: long
+execute:
+  echo: false
+  warning: false
+  message: false
+  include: true
+abstract: "This project investigates the relationship between low educational attainment in adults and poverty across California communities using data from CalEnviroScreen 4.0, which is a statewide environmental health and socioeconomic screening tool developed by the California Office of Environmental Health Hazard Assessment (OEHHA). We use simple linear regression to model poverty rates as a function of percentage of adults living without a college degree, then extend the analysis by incorporating other variables such as unemployment and exposure to pollution. Results indicate that low educational attainment is associated with higher poverty levels, even when accounting for unemployment. Diagnostic checks suggest the linear model provides a reasonable fit, though influential observations highlight geographic variation in socioeconomic vulnerability. {FIX THIS LATER}***CalEnviroScreen is a powerful tool for addressing historical and continued inequality. By linking socioeconomic factors such as educational attainment with poverty, our analysis illustrates how the tool can inform efforts by government agencies, non-governmental organizations, and community advocates to reduce pollution, protect public health, and advance environmental justice. This type of work contributes to the broader goal of making the California Dream accessible for all.***"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+bibliography: references.bib
+body-footer: Math 261A - Regression Theory and Methods | Fall 2025 Project 1
+---
+
+# Introduction{#sec-intro}
+
+Educational access and attainment is often a pivotal portion of the discussions around
+
+The remainder of this paper is structured as follows: @sec-data discusses the data, @sec-methods the model and the methods we used, @sec-results presents the results, and @sec-discussion discusses the conclusions in addition to weaknesses with this analysis.
+
+# Data {#sec-data}
+The data section should:
+Describe the data you will use for your analysis in suffi cient detail that
+another analyst could conceivably reproduce your results.
+Convince the reader that your data will provide evidence that will help to answer your question of interest.
+Introduce potential pitfalls of your dataset and any relevant
+assumptions necessary for your data to be useful
+Include basic descriptive summaries and visualizations that shed light on your question (ex. if you are interested in a treatment effect, consider
+comparing histograms for treated/control groups)
+
+Focus on the relevant ???dimensions:??? What is the sample size? What are the important variables? When/where/how were the data collected?
+Make sure your reader understands how your response variable was
+measured/calculated.
+Some of the figures and tables here may be better placed in an appendix.
+One or two figures (or zero) may be all that are needed???don???t include visuals/tables that you are not prepared to discuss and interpret for your
+reader.
+
+(each percentage measured for each California 2019 census location tract)
+
+
+# Methods {#sec-methods}
+To investigate the relationship between poverty rates and educational attainment, we adopt a simple linear regression model with poverty rate as the response and low-educational rate as the predictor. Let $Y_i$ denote percentage of the population living under the poverty line in census tract $i$, and let $X_i$ denote the percentage of adults without a high-school diploma in the same tract. 
+
+$$Y_i = \beta_0 + \beta_1X_i + \epsilon_i \text{ for }i=1,...,n$$
+where $\beta_0$ (the intercept) represents the expected poverty rate in a census tract where 0% of the adult population is living without a high school diploma. Additionally,  $\beta_1$ represents the expected change in poverty rate percentage associated with a 1% increase in the share of adults without a high school diploma. Finally, $\epsilon_i$ denotes a random error term that encapsulates unobserved factors that impact poverty rates that are not explained by low-educational attainment percentage.
+
+The parameters of the model ($\beta_0$ and $\beta_1$) are estimated using ordinary least squares, or OLS. Estimation of all analyses were completed with **R (version 4.5.1)** [@R-base] using the built-in lm() function, which fits linear regression models by OLS. The basic syntax is lm(response ~ predictor, data = dataset), and in our case the function lm(pov ~ edu, data = to_analyze_df) instructs R to regress the poverty rate (pov) on the percentage of adults without a high school diploma (edu) using the dataset that we have turned into a cleaned dataframe that omits null values. Here, pov is the response variable (dependent variable),edu is the predictor variable (independent variable), and the ~ operator indicates the model formula, meaning ???pov is modeled as a function of edu.??? The function estimates the intercept $\beta_0$ and slope $\beta_1$ by minimizing the sum of squared residuals. By default, lm() returns a model object that contains the estimated coefficients, residuals, fitted values, and summary statistics, which we accessed using functions such as summary() and coef().
+
+To assess model fit, we report the estimated regression coefficients, standard errors, and coefficient of determination($R^2$), and the associated confidence interval with our the correlation. We also present a scatterplot (@fig-pov-scatter)of the data with the fitted regression line and a confidence band, which provides a visual assessment of model fit. 
+
+We adopt the standard assumptions of the linear regression model:
+**1. Linearity**: The relationship between educational attainment and poverty is linear. 
+**2. Independence of errors**: The error terms $\epsilon_i$ are independent across census tracts.
+**3. Constant variance**: the error terms have constant variance across values of $X_i$, or the low-educational attainment rate for each census tract.
+**4. Normality of residuals**: the residuals are approximately normally distributed, meaning the error terms are normally distributed with mean zero.
+
+To evaluate whether the model comply with the assumptions of linear regression, we conduct the following diagnostic checks: 
+* **Residual plot**: We examine a scatterplot of residuals versus fitted values (@fig-pov-resids) to assess linearity, independence of errors, and constant variance. A random scatter of residuals would indicate that the linearity and constant variance assumptions are reasonable.
+* **Normality of residuals**: We use a Q???Q plot (@fig-pov-qq) and a histogram of residuals (@fig-pov-histo) to check whether they approximately follow a normal distribution.
+Additionally, we inspected potential other factors on poverty rates that were contained in the dataset such as unemployment (@fig-pov-other).
+Overall, these these diagnostics provide evidence about the level of estimated coefficient reliability and inference validity from the model. Any violations of assumptions are noted and discussed in @sec-results and @sec-discussion.
+
+
+```{r}
+library(tidytuesdayR); library(dplyr); library(ggplot2);library(broom)
+library(scales); library(patchwork); library(ggrepel); library(qqplotr)
+
+raw_data <- read.csv("CalEnviroScreen_4.0_raw_data.csv") # load data
+
+#coerce to numeric & drop NAs
+to_analyze_df_3vars <- raw_data %>%
+  transmute(
+    pov = as.numeric(pov),
+    edu = as.numeric(edu),
+    unemp = as.numeric(unemp)
+  ) %>%
+  filter(!is.na(pov), !is.na(edu), !is.na(unemp))
+
+to_analyze_df <- raw_data %>%
+  transmute(
+    pov   = as.numeric(pov),
+    edu   = as.numeric(edu)
+    ) %>%
+  filter(!is.na(pov), !is.na(edu))
+
+# Set a global theme for all plots
+theme_set(
+  theme_minimal(base_size = 10) +
+    theme(
+      plot.title = element_text(face = "bold"),
+      plot.caption = element_text(hjust = 0)
+    )
+)
+
+# Model
+set.seed(123) 
+lm_fit <- lm(pov ~ edu, data=to_analyze_df) #predictor (x): edu, outcome (y): pov
+coefs <- coef(lm_fit)
+intercept <- coef(lm_fit)[1]
+slope <- coef(lm_fit)[2] 
+r2 <- summary(lm_fit)$r.squared
+
+gl <- glance(lm_fit)
+n  <- stats::nobs(lm_fit)
+```
+
+```{r fig-pov-scatter}
+eq_text <- sprintf(" regression line: y = %.3f + %.3f x", intercept, slope, r2) # create equation text
+
+#scatter plot with regression
+ggplot(to_analyze_df, aes(x = edu, y = pov)) + #plot
+  geom_point(alpha = 0.7, size = .5) +
+  geom_smooth(method = "lm", se = TRUE, color = "purple") +
+  annotate("label", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1,
+           label = eq_text, label.size = .2, alpha = .5) +
+  labs(
+    title = "Low-educational attainment vs. poverty rates\nby location(census tract)",
+    subtitle    = "Simple linear regression using 2019 California census tract data",
+    x        = "Adults without high school diploma (%)",
+    y        = "Population under poverty line (%)",
+    caption  = "Source: OEHHA CalEnviroScreen 4.0"
+  )
+
+print(eq_text)
+summary(lm_fit)
+```
+
+```{r fig-pov-resids}
+resid_df <- data.frame(.fitted = fitted(lm_fit), .resid = resid(lm_fit))
+ggplot(resid_df, aes(.fitted, .resid)) +
+  geom_point(alpha = .6, size = .6) +
+  geom_hline(yintercept = 0, linetype = "dashed", color="darkgreen") +
+  geom_smooth(method = "loess", se = FALSE, color = "purple") +
+  labs(x = "Fitted values", y = "Residuals", title = "Residuals vs Fitted")
+```
+
+```{r fig-pov-qq}
+qqnorm(resid(lm_fit))
+qqline(resid(lm_fit))
+```
+
+```{r fig-pov-histo}
+ggplot(data.frame(res = resid(lm_fit)), aes(x = res)) +
+  geom_histogram(bins = 30) +
+  labs(x = "Residual", y = "Count", title = "Histogram of Residuals")
+```
+
+```{r fig-pov-other}
+# Model with unemployment included 
+set.seed(123) 
+lm_fit2 <- lm(pov ~ edu, data=to_analyze_df_3vars) #predictor (x): edu, outcome (y): pov
+
+coefs <- coef(lm_fit2)
+intercept <- coef(lm_fit2)[1]
+slope <- coef(lm_fit2)[2] 
+r2 <- summary(lm_fit2)$r.squared
+
+gl <- glance(lm_fit2)
+n  <- stats::nobs(lm_fit2)
+
+eq_text <- sprintf(" regression line: y = %.3f + %.3f x", intercept, slope, r2) # create equation text
+
+#scatter plot with regression
+ggplot(to_analyze_df_3vars, aes(x = edu, y = pov, color=unemp)) + #plot
+  geom_point(alpha = 0.7, size = .5) +
+  scale_color_viridis_c(name = "Unemployment (%)", option = "plasma")+
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  annotate("label", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1,
+           label = eq_text, label.size = .2, alpha = .5) +
+  labs(
+    title = "Low-educational attainment vs. poverty rates\nby location(census tract)",
+    subtitle    = "Simple linear regression using 2019 California census tract data",
+    x        = "Adults without high school diploma (%)",
+    y        = "Population under poverty line (%)",
+    caption  = "Source: OEHHA CalEnviroScreen 4.0"
+  ) +
+  theme_pubr() 
+
+print(eq_text)
+summary(lm_fit2)
+
+```
+
+# Results {#sec-results}
+
+The results section is where you will describe the relevant parameter
+estimates, predictions, and summaries that you are using to justify your
+answer to your research question.
+You do not need to discuss the implications in great detail here. Focus on
+identifying the relevant model parameters/summaries and explaining
+them clearly and precisely.
+If you are using confi dence intervals, explain what the interpretation is. If
+you conduct hypothesis tests, be sure to identify the type I error rate and
+the relevant hypotheses.
+
+#Discussion {#sec-discussion}
+
+The discussion section is generally the last section of the paper and
+includes:
+1. A brief summary of the paper (perhaps not too different from the
+introduction, but you can lean on your results and technical detail
+more).
+2. Discussion of your key fi ndings and what their implications are for
+your research question.
+3. Discussion of some potential weaknesses of your study. There are
+always weaknesses???don???t try to hide them.
+4. Identification of potential improvements and extensions or future areas of related research.
+
+
+QQplot discussion:
+The raw model Q???Q plot looks so extreme because of how the response variable (pov) behaves and how OLS residuals are distributed in this case:
+*Bounded outcome (0???100%) - Poverty rates are percentages. However, OLS assumes residuals are normal and unbounded, but this data is bounded between 0 and 100, which creates skew and heavy tails.
+
+*The variance in poverty rates is not constant across education levels. Residuals fan out, so the tails get much thicker than a normal distribution would expect. That???s why the vertical axis in the Q???Q plot is so stretched.
+
+*Outliers / high leverage points: Some census tracts have unusually high poverty (50%+), while most are low. Those extremes likely dominate the residual distribution, pulling the top quantiles way off the line.
+
+These are potential reasons why the left qq-pplot (???Raw model???) shows almost a vertical line of points, instead of following the diagonal reference. The residual distribution is far from normal, which is too skewed and too heavy-tailed to trust the normality of errors in this linear regression model. However, when we use sqrt(Y) (the right plot), the residuals lined up more smoothly. That???s because the square-root transform stabilizes variance, pulls in the long right tail (very high poverty rates),and makes residuals more symmetric.
+
+# References
