@@ -1,6 +1,6 @@
 ---
 title: "Linking Education, Unemployment, and Poverty"
-subtitle: "Insights from Californias CalEnviroScreen Data"
+subtitle: "Insights from California's CalEnviroScreen Data"
 author: "Isis Martinez"
 thanks: "Project repository available at: [https://github.com/iterrall/MATH261A-project-1-martinez](https://github.com/iterrall/MATH261A-project-1-martinez)."
 date: today
@@ -10,84 +10,48 @@ execute:
   warning: false
   message: false
   include: true
-abstract: "This project investigates the relationship between low educational attainment in adults and poverty across California communities using data from CalEnviroScreen 4.0, which is a statewide environmental health and socioeconomic screening tool developed by the California Office of Environmental Health Hazard Assessment (OEHHA). We use simple linear regression to model poverty rates as a function of percentage of adults living without a college degree, then extend the analysis by incorporating other variables such as unemployment and exposure to pollution. Results indicate that low educational attainment is associated with higher poverty levels, even when accounting for unemployment. Diagnostic checks suggest the linear model provides a reasonable fit, though influential observations highlight geographic variation in socioeconomic vulnerability. {FIX THIS LATER}***CalEnviroScreen is a powerful tool for addressing historical and continued inequality. By linking socioeconomic factors such as educational attainment with poverty, our analysis illustrates how the tool can inform efforts by government agencies, non-governmental organizations, and community advocates to reduce pollution, protect public health, and advance environmental justice. This type of work contributes to the broader goal of making the California Dream accessible for all.***"
+abstract: "We investigate the relationship between low educational attainment and poverty across California communities by using data from CalEnviroScreen 4.0, which is a statewide screening tool developed by the California Office of Environmental Health Hazard Assessment (OEHHA) that uses 2019 census-tract location data. We use simple linear regression to model census-tract poverty rates as a function of percentage of adults living without a high school diploma, and present a supplemental model that additionally includes unemployment. The primary model will show that each percent increase in adults without a high school diploma per census-tract is associated with an average increase of .97% in poverty rate in a the same area. The model explains about 61.6% of tract-level variation in poverty, and is only minimally impacted when accounting for unemployment. This report will also diagnostic of the model that indicate heteroskedasticity and non-normal residuals, so we interpret interval estimates with caution. CalEnviroScreen is a powerful tool for addressing historical and continued inequality. By linking socioeconomic factors such as educational attainment with poverty, our analysis illustrates how the tool can inform priorities when seeking to mitigate socioeconomic disparities."
 output: 
   pdf_document:
     latex_engine: xelatex
 bibliography: references.bib
 body-footer: Math 261A - Regression Theory and Methods | Fall 2025 Project 1
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
-# Introduction{#sec-intro}
+```{r, include=FALSE}
 
-Educational access and attainment is often a pivotal portion of the discussions around
+#libraries
+library(dplyr)
+library(ggplot2)
+library(broom)
+library(scales)
+library(patchwork)
+library(ggrepel)
+library(qqplotr)
+library(readr)
+library(knitr)
 
-The remainder of this paper is structured as follows: @sec-data discusses the data, @sec-methods the model and the methods we used, @sec-results presents the results, and @sec-discussion discusses the conclusions in addition to weaknesses with this analysis.
+#load data
+raw_data <- read.csv("CalEnviroScreen_4.0_raw_data.csv")
 
-# Data {#sec-data}
-The data section should:
-Describe the data you will use for your analysis in suffi cient detail that
-another analyst could conceivably reproduce your results.
-Convince the reader that your data will provide evidence that will help to answer your question of interest.
-Introduce potential pitfalls of your dataset and any relevant
-assumptions necessary for your data to be useful
-Include basic descriptive summaries and visualizations that shed light on your question (ex. if you are interested in a treatment effect, consider
-comparing histograms for treated/control groups)
-
-Focus on the relevant ???dimensions:??? What is the sample size? What are the important variables? When/where/how were the data collected?
-Make sure your reader understands how your response variable was
-measured/calculated.
-Some of the figures and tables here may be better placed in an appendix.
-One or two figures (or zero) may be all that are needed???don???t include visuals/tables that you are not prepared to discuss and interpret for your
-reader.
-
-(each percentage measured for each California 2019 census location tract)
-
-
-# Methods {#sec-methods}
-To investigate the relationship between poverty rates and educational attainment, we adopt a simple linear regression model with poverty rate as the response and low-educational rate as the predictor. Let $Y_i$ denote percentage of the population living under the poverty line in census tract $i$, and let $X_i$ denote the percentage of adults without a high-school diploma in the same tract. 
-
-$$Y_i = \beta_0 + \beta_1X_i + \epsilon_i \text{ for }i=1,...,n$$
-where $\beta_0$ (the intercept) represents the expected poverty rate in a census tract where 0% of the adult population is living without a high school diploma. Additionally,  $\beta_1$ represents the expected change in poverty rate percentage associated with a 1% increase in the share of adults without a high school diploma. Finally, $\epsilon_i$ denotes a random error term that encapsulates unobserved factors that impact poverty rates that are not explained by low-educational attainment percentage.
-
-The parameters of the model ($\beta_0$ and $\beta_1$) are estimated using ordinary least squares, or OLS. Estimation of all analyses were completed with **R (version 4.5.1)** [@R-base] using the built-in lm() function, which fits linear regression models by OLS. The basic syntax is lm(response ~ predictor, data = dataset), and in our case the function lm(pov ~ edu, data = to_analyze_df) instructs R to regress the poverty rate (pov) on the percentage of adults without a high school diploma (edu) using the dataset that we have turned into a cleaned dataframe that omits null values. Here, pov is the response variable (dependent variable),edu is the predictor variable (independent variable), and the ~ operator indicates the model formula, meaning ???pov is modeled as a function of edu.??? The function estimates the intercept $\beta_0$ and slope $\beta_1$ by minimizing the sum of squared residuals. By default, lm() returns a model object that contains the estimated coefficients, residuals, fitted values, and summary statistics, which we accessed using functions such as summary() and coef().
-
-To assess model fit, we report the estimated regression coefficients, standard errors, and coefficient of determination($R^2$), and the associated confidence interval with our the correlation. We also present a scatterplot (@fig-pov-scatter)of the data with the fitted regression line and a confidence band, which provides a visual assessment of model fit. 
-
-We adopt the standard assumptions of the linear regression model:
-**1. Linearity**: The relationship between educational attainment and poverty is linear. 
-**2. Independence of errors**: The error terms $\epsilon_i$ are independent across census tracts.
-**3. Constant variance**: the error terms have constant variance across values of $X_i$, or the low-educational attainment rate for each census tract.
-**4. Normality of residuals**: the residuals are approximately normally distributed, meaning the error terms are normally distributed with mean zero.
-
-To evaluate whether the model comply with the assumptions of linear regression, we conduct the following diagnostic checks: 
-* **Residual plot**: We examine a scatterplot of residuals versus fitted values (@fig-pov-resids) to assess linearity, independence of errors, and constant variance. A random scatter of residuals would indicate that the linearity and constant variance assumptions are reasonable.
-* **Normality of residuals**: We use a Q???Q plot (@fig-pov-qq) and a histogram of residuals (@fig-pov-histo) to check whether they approximately follow a normal distribution.
-Additionally, we inspected potential other factors on poverty rates that were contained in the dataset such as unemployment (@fig-pov-other).
-Overall, these these diagnostics provide evidence about the level of estimated coefficient reliability and inference validity from the model. Any violations of assumptions are noted and discussed in @sec-results and @sec-discussion.
-
-
-```{r}
-library(tidytuesdayR); library(dplyr); library(ggplot2);library(broom)
-library(scales); library(patchwork); library(ggrepel); library(qqplotr)
-
-raw_data <- read.csv("CalEnviroScreen_4.0_raw_data.csv") # load data
 
 #coerce to numeric & drop NAs
 to_analyze_df_3vars <- raw_data %>%
   transmute(
-    pov = as.numeric(pov),
-    edu = as.numeric(edu),
-    unemp = as.numeric(unemp)
+    pov = suppressWarnings(as.numeric(pov)),
+    edu = suppressWarnings(as.numeric(edu)),
+    unemp = suppressWarnings(as.numeric(unemp))
   ) %>%
   filter(!is.na(pov), !is.na(edu), !is.na(unemp))
 
 to_analyze_df <- raw_data %>%
-  transmute(
-    pov   = as.numeric(pov),
-    edu   = as.numeric(edu)
-    ) %>%
-  filter(!is.na(pov), !is.na(edu))
+transmute(
+  pov = suppressWarnings(as.numeric(pov)),
+  edu = suppressWarnings(as.numeric(edu))) %>%
+filter(!is.na(pov), !is.na(edu))
 
 # Set a global theme for all plots
 theme_set(
@@ -98,17 +62,124 @@ theme_set(
     )
 )
 
-# Model
+#### Models #### 
 set.seed(123) 
-lm_fit <- lm(pov ~ edu, data=to_analyze_df) #predictor (x): edu, outcome (y): pov
+lm_fit <- lm(pov ~ edu, data=to_analyze_df) #predictor (x): edu, outcome (y): pov; simple linear regression (primary)
+lm_fit2 <- lm(pov ~ edu + unemp, data=to_analyze_df_3vars) #predictor (x): edu, outcome (y): pov, for model with unemployment included 
+
+
+# vars for inline references
+n_obs    <- nobs(lm_fit)
 coefs <- coef(lm_fit)
 intercept <- coef(lm_fit)[1]
 slope <- coef(lm_fit)[2] 
 r2 <- summary(lm_fit)$r.squared
+p_val <- broom::tidy(lm_fit) %>% 
+  filter(term == "edu") %>% pull(p.value)
 
+conf_int <- confint(lm_fit)["edu", ]
+
+# Second model vars
+n_obs2 <- stats::nobs(lm_fit2)
+intercept2 <- coef(lm_fit2)[1]
+slope2 <- coef(lm_fit2)["edu"]
+r22 <- summary(lm_fit2)$r.squared
+
+
+# summaries
 gl <- glance(lm_fit)
-n  <- stats::nobs(lm_fit)
+summary(lm_fit)
+
+gl2 <- glance(lm_fit2)
+summary(lm_fit2)
+
+
+
+# Descriptive stats table
+summ_tbl <- bind_rows(
+to_analyze_df_3vars %>% summarize(
+variable = "pov",
+mean = mean(pov), sd = sd(pov), min = min(pov), p25 = quantile(pov, .25),
+median = median(pov), p75 = quantile(pov, .75), max = max(pov), n = n()
+),
+to_analyze_df_3vars %>% summarize(
+variable = "edu",
+mean = mean(edu), sd = sd(edu), min = min(edu), p25 = quantile(edu, .25),
+median = median(edu), p75 = quantile(edu, .75), max = max(edu), n = n()
+),
+to_analyze_df_3vars %>% summarize(
+variable = "unemp",
+mean = mean(unemp), sd = sd(unemp), min = min(unemp), p25 = quantile(unemp, .25),
+median = median(unemp), p75 = quantile(unemp, .75), max = max(unemp), n = n()
+)
+) %>% mutate(across(mean:max, round, 2))
+
 ```
+# Introduction {#sec-intro}
+
+The link between educational attainment to socioeconomic well-being has been widely corroborated in research (for example, @cutler2006education and @zajacova2018). The persistent geographic inequities California faces drives the need for us to take a closer look at how education relates to poverty when related to location. Therefore, using the CalEnviroScreen 4.0 dataset, [@oehha_calenviroscreen_dataset], we ask the following question in this project: **To what extent is tract-level poverty associated with low levels of education in California?**.
+
+Understanding this question can be an important way to learn poverty disparity mitigation techniques within communities to improve health, since low socioeconomic status has been tied to multiple environmental risks and health disparities [@OEHHA2021].
+
+We address this question by fitting a simple linear regression by taking poverty rate as a function of percentage of adults lacking a high school diploma. We then extend the analysis by exploring the contribution of unemployment makes on the model and examining the robustness of linear regression model assumptions.
+
+The remainder of this paper is structured as follows: @sec-data discusses the data, @sec-methods the model and the methods we used, @sec-results presents the results, and @sec-discussion discusses the conclusions in addition to weaknesses with the conclusions from this model.
+
+# Data {#sec-data}
+
+In 2021, The California Environmental Protection Agency published its most recent version of the California Communities Environmental Health Screening tool, which is also known as CalEnviroScreen 4.0 [@OEHHA_MapsData]. Since its original release in 2013, CalEnviroScreen has compiled and analyzed census-tract data in California. While its primary focus is to better understand and address environmental concerns in California communities, we can learn a great deal from the raw data that can be found on the CalEnviroScreen Data Hub [@oehha_calenviroscreen_dataset] about possible socioeconomic well-being predictors and outcomes. There is a wealth of information around geospatial data that can be used to drive more equitable decision-making by exploring possible factors that play a role in changes to poverty levels.
+
+We use the data from CalEnviroScreen 4.0 that uses data from the US Census Bureau's American Community Survey (ACS) that collects information on educational attainment annually [@OEHHA2021].
+
+This dataset provides socioeconomic, health, and environmental measures, and our observational units are census tracts in California. 
+For this analysis, we focus on the 2019 values of socioeconomic indicators from the @oehha_calenviroscreen_dataset: 
+
+* **Poverty (pov)**: Percent of the population living below two times the federal poverty level (5-year estimate, 2015-2019) within each California census tract. Multiplying the federal poverty level is to account for the high cost of living in California.
+
+* **Education (edu)**: Percent of adults that are 25+ years old without a high school diploma. This percentage was derived as 100 minus the share of adults with high school or higher education levels (estimated over 5 years, 2015-2019)
+
+* **Unemployment (unemp)**: Percent of the labor force that is unemployed.
+
+The data on educational attainment and poverty come 5-year estimates from 2015–2019 that come from the American Community Survey (ACS) (@acs_tech; @census_portal) and were presented within the @oehha_calenviroscreen_dataset dataset. We follow OEHHA's indicator methods (@OEHHA2021), and we note that ACS estimates include margins of error. OEHHA uses standard error and corresponding SE screening to flag unreliable tracts. We remove tracts with missing values in our analysis, with a total of `r n_obs` for our primary model and `r n_obs2` for our model including unemployment as a variable. All variables are percentages in between 0 and 100, facilitating coefficient interpretation as percentage-point changes.
+which facilitates our coefficient interpretation as changes in percentage-point.
+
+Our interpretation of regression coefficients are represented as marginal changes in poverty rate per one-percentage-point change in education or unemployment. Possible limitations include rounding of reported percentages, geographic clustering effects not captured by the model, and the bounded nature of the data (0–100%), which can produce heteroskedastic residuals in linear regression. 
+
+```{r tbl-summ}
+kable(summ_tbl, caption = 'Descriptive summaries for key variables (tract level).', booktabs = TRUE)
+```
+
+Descriptive summaries show that poverty rates, education, and unemployment are all highly variable across tracts as shown in the table @tbl-summ that reports key summaries from our data. A scatterplot of poverty versus education (@fig-pov-scatter) suggests a positive linear trend, while unemployment also shows a positive but weaker association with poverty (@fig-pov-other).
+
+# Methods {#sec-methods}
+
+To investigate the relationship between poverty rates and educational attainment, we adopt a simple linear regression model with poverty as the response and low-educational rate as the predictor. Let $Y_i$ denote the percentage of the population living under the poverty threshold in census tract $i$, and let $X_i$ denote the percentage of adults without a high-school diploma in the same tract.
+
+$$Y_i = \beta_0 + \beta_1X_i + \varepsilon_i \text{ for }i=1,...,n$$ 
+
+where $\beta_0$ (the intercept) represents the expected poverty rate in a census tract when $X_i=0$, or when 0% of the adult population is living without a high school diploma. Additionally, $\beta_1$ represents the marginal change in poverty (percentage points) for one point increase in $X_i$, or
+adults without a high school diploma. Finally, $\varepsilon_i$ denotes a random error term that encapsulates unobserved factors that impact poverty rates not explained by low-educational attainment percentage. In other words, we estimate a simple linear regression pov =$\beta_0 + \beta_1$(edu) + $\varepsilon$ using OLS in R [@R2024]. In our data (n = `r n_obs`), the estimated intercept is $\hat{\beta_0}}$= `r round(intercept, 3)` and estimated slope is $\hat{\beta_1}}=$  `r round(slope, 3)`. In a supplementary model including unemployment, the fitted slope for education is with number of tracts equaling `r n_obs2` , the estimated intercept is $\hat{\beta_0}*}=$ `r round(intercept2, 3)` and estimated slope is $\hat{\beta_1}*}=$ `r round(slope2, 3)` with $R^2$ = `r round(r22,3)`.
+
+The parameters of the model ($\beta_0$ and $\beta_1$) are estimated using ordinary least squares, or OLS. We estimate parameters with ordinary least squares (OLS) with R (version 4.5.1) [@R2024] using the built-in lm() function, which fits linear regression models by OLS. The basic syntax is lm(response \~ predictor, data = dataset), and in our case the function lm(pov \~ edu, data = to_analyze_df). This instructs R to regress the poverty rate (pov) on the percentage of adults without a high school diploma (edu) using the dataset that we have turned into a cleaned dataframe that omits null values. Here, pov is the response variable (dependent variable),edu is the predictor variable (independent variable), and the \~ operator indicates the model formula, meaning "pov" is modeled as a function of "edu". The function estimates the intercept $\beta_0$ and slope $\beta_1$ by minimizing the sum of squared residuals. By default, lm() returns a model object that contains the estimated coefficients, residuals, fitted values, and summary statistics, which we accessed using functions such as summary() and coef().
+
+To assess model fit, we report the estimated regression coefficients, standard errors, and coefficient of determination($R^2$), and the associated confidence interval with our the correlation. We also present a scatterplot (@fig-pov-scatter)of the data with the fitted regression line and a confidence band, which provides a visual assessment of model fit. As a robustness check, we fit a supplemental multiple linear regression including unemployment:
+$$Y_i = \beta_0 + \beta_1X_i + \beta_2U_i +\varepsilon_i \text{ for }i=1,...,n$$ 
+where $U_i$ represents the unemployment percentage, and $beta_2$ is the slope on unemployment. This would be the expected change in the poverty rate for 1 percentage-point increase in unemployment, if education level is constant.
+
+For this OLS, we adopt the standard assumptions of the linear regression model: 
+**1. Linearity**: The relationship between educational attainment and poverty is linear. 
+
+**2. Independence of errors**: The error terms $\varepsilon_i$ are independent between different census tracts. 
+
+**3. Constant variance**: the error terms have constant variance across values of $X_i$ (the low-educational attainment rate for  census tract $i$). 
+
+**4. Normality of residuals**: the residuals are approximately normally distributed, meaning the error terms have a mean of zero and are normally distributed.
+
+Because rates are bounded between 0 and 100, having a constant variance is unlikely. Therefore, we complete the following diagnostics and note implications for inference to evaluate whether the model comply with the assumptions of linear regression:
+
+* **Residual plot**: We examine a scatterplot of residuals versus fitted values (@fig-pov-scatter) to assess linearity, independence of errors, and constant variance. A random scatter of residuals would indicate that the linearity and constant variance assumptions are reasonable. 
+
+* **Normality of residuals**: We use a Q–Q plot (@fig-pov-qq) and a histogram of residuals (@fig-pov-histo) to check whether they approximately follow a normal distribution. Additionally, we inspected other factors on poverty rates that were contained in the dataset such as unemployment (@fig-pov-other). Overall, the diagnostics provide evidence about the level of estimated coefficient reliability and inference validity from the model. Any violations of assumptions are noted and discussed in @sec-results and @sec-discussion.
 
 ```{r fig-pov-scatter}
 eq_text <- sprintf(" regression line: y = %.3f + %.3f x", intercept, slope, r2) # create equation text
@@ -118,17 +189,14 @@ ggplot(to_analyze_df, aes(x = edu, y = pov)) + #plot
   geom_point(alpha = 0.7, size = .5) +
   geom_smooth(method = "lm", se = TRUE, color = "purple") +
   annotate("label", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1,
-           label = eq_text, label.size = .2, alpha = .5) +
+           label = eq_text, label.size = 0.2, alpha = 0.5) +
   labs(
-    title = "Low-educational attainment vs. poverty rates\nby location(census tract)",
-    subtitle    = "Simple linear regression using 2019 California census tract data",
+    title = "Rates of low-educational attainment vs. poverty",
+    subtitle    = "Simple linear regression by census tract (2015–2019)",
     x        = "Adults without high school diploma (%)",
-    y        = "Population under poverty line (%)",
-    caption  = "Source: OEHHA CalEnviroScreen 4.0"
+    y        = "Population under 2× FPL (%)",
+    caption  = "Source: ACS 2015–2019; CalEnviroScreen 4.0"
   )
-
-print(eq_text)
-summary(lm_fit)
 ```
 
 ```{r fig-pov-resids}
@@ -141,7 +209,7 @@ ggplot(resid_df, aes(.fitted, .resid)) +
 ```
 
 ```{r fig-pov-qq}
-qqnorm(resid(lm_fit))
+qqnorm(resid(lm_fit), main = "Normal Q–Q plot (residuals)")
 qqline(resid(lm_fit))
 ```
 
@@ -152,75 +220,72 @@ ggplot(data.frame(res = resid(lm_fit)), aes(x = res)) +
 ```
 
 ```{r fig-pov-other}
-# Model with unemployment included 
-set.seed(123) 
-lm_fit2 <- lm(pov ~ edu, data=to_analyze_df_3vars) #predictor (x): edu, outcome (y): pov
+#plot for scatter with unemp included
 
-coefs <- coef(lm_fit2)
-intercept <- coef(lm_fit2)[1]
-slope <- coef(lm_fit2)[2] 
-r2 <- summary(lm_fit2)$r.squared
-
-gl <- glance(lm_fit2)
-n  <- stats::nobs(lm_fit2)
-
-eq_text <- sprintf(" regression line: y = %.3f + %.3f x", intercept, slope, r2) # create equation text
+# Colored by unemployment (for visualization only)
+ue_text <- sprintf("Supplemental fit R^2 = %.3f", r22)
 
 #scatter plot with regression
 ggplot(to_analyze_df_3vars, aes(x = edu, y = pov, color=unemp)) + #plot
-  geom_point(alpha = 0.7, size = .5) +
+  geom_point(alpha = 0.6, size = 0.6) +
   scale_color_viridis_c(name = "Unemployment (%)", option = "plasma")+
   geom_smooth(method = "lm", se = TRUE, color = "black") +
   annotate("label", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.1,
-           label = eq_text, label.size = .2, alpha = .5) +
+           label = ue_text, label.size = 0.2, alpha = 0.5) +
   labs(
-    title = "Low-educational attainment vs. poverty rates\nby location(census tract)",
-    subtitle    = "Simple linear regression using 2019 California census tract data",
+    title = "Education vs. poverty, colored by unemployment",
+    subtitle    = "Regression using 2019 California census tract data (edu + unemp)",
     x        = "Adults without high school diploma (%)",
-    y        = "Population under poverty line (%)",
+    y        = "Population under 2× FPL (%)",
     caption  = "Source: OEHHA CalEnviroScreen 4.0"
   ) +
-  theme_pubr() 
-
-print(eq_text)
-summary(lm_fit2)
-
+  theme_minimal() 
 ```
 
 # Results {#sec-results}
 
-The results section is where you will describe the relevant parameter
-estimates, predictions, and summaries that you are using to justify your
-answer to your research question.
-You do not need to discuss the implications in great detail here. Focus on
-identifying the relevant model parameters/summaries and explaining
-them clearly and precisely.
-If you are using confi dence intervals, explain what the interpretation is. If
-you conduct hypothesis tests, be sure to identify the type I error rate and
-the relevant hypotheses.
+The simple linear regression of poverty level on education yields the following fitted model:
 
-#Discussion {#sec-discussion}
+$\widehat{pov}=$ `r round(intercept,3)` $+$ `r round(slope,3)`
+(edu) with $R^2 = $`r round(r2,3)` and $n=$ `r n_obs`. 
 
-The discussion section is generally the last section of the paper and
-includes:
-1. A brief summary of the paper (perhaps not too different from the
-introduction, but you can lean on your results and technical detail
-more).
-2. Discussion of your key fi ndings and what their implications are for
-your research question.
-3. Discussion of some potential weaknesses of your study. There are
-always weaknesses???don???t try to hide them.
-4. Identification of potential improvements and extensions or future areas of related research.
+**Here is our interpretation of the coefficients**:
+
+* The intercept $\beta_0 \approx$ `r round(intercept,3)`, so for a tract with 100% of its adults holding at least a high school diploma (or 0% lacking one), this model would predict the poverty rate to be an average of `paste0(round(intercept, 2), "%")` in that tract.
+
+* The slope $\beta_1 \approx$  `r round(slope,3)`. In other words, each one-percent increase in adults without a high-school diploma per census tract corresponds to an average `r paste0(round(slope, 2), "%")` increase in poverty rate in that tract. 
+
+* The model fit $R^2=$`r round(r2, 2)`, so about `r paste0(round(r2 * 100, 2), "%")` of the variation in the poverty rate we are measuring is explained by low-education attainment percentage within a census-tract.
+
+* The rounded $p$-value for education is `r format.pval(p_val, digits = 3)` ($p < 0.001$), which is far below common thresholds. This indicates that the observed data is not more extreme than the rejection region and the association is statistically significant (meaning this is very unlikely due to chance). Therefore, both coefficients are noteworthy. .
+
+We added a **supplemental model** with unemployment included to measure if another factor changes our results significantly. The education effect remains positive (`r round(slope2, 3)`), and overall fit improves minimally ($R^2 =$ `r round(r22,3)`, $n = r n_obs2$). When unemployment was added to the regression, the coefficient for education remained remarkable, but unemployment showed a weaker association with poverty. The overall model fit improved only slightly with the increase in $R^2$. This suggests that differences in unemployment rates across tracts do not account for most of the variation in poverty once educational attainment is considered.
+
+From our model, we find a 95% confidence interval for the education slope is approximately equal to `r paste0("[", round(confint(lm_fit)[2,1], 2), ", ",  round(confint(lm_fit)[2,2], 2), "]")`. This means we are 95% confident that for each additional percentage point increase in adults without a high school diploma, the poverty rate of the same census tract will increase between `r round(confint(lm_fit)[2,1] * 100, 2)`% and `round(confint(lm_fit)[2,2], 2)`%. 
+
+Additionally, we conduct a hypothesis test to formally evaluate whether education is associated with poverty. Let our type I error rate be $\alpha = 0.05$. Let us test the following hypotheses:
+
+$H_0$: $\beta_1 = 0$ (no relationship between education and poverty) vs. $H_a$: $\beta_1 \neq 0$. 
+
+The t-test for the education coefficient yields a large test statistic ($t \approx 113$) with a p-value less than 0.001. Because the p-value $ < \alpha = 0.05$, we reject $H_0$ and conclude that low educational attainment is associated with higher poverty rates at the census tract level. As an additional note, when unemployment is included in the supplemental model, the education effect remains relevant, while the unemployment coefficient is comparatively weaker. This suggests that unemployment alone does not explain most of the variation in poverty once education is accounted for.
+
+# Discussion{#sec-discussion}
+
+**Summary**: The slope is positive and statistically significant, so we can conclude that the poverty rate tends to be higher in locations where there is a higher percentage of adults with lower levels of education than high school diplomas. If the linear regression assumptions are true, the results we see in @sec-results indicate a moderate effect size in the data that suggest low-education attainment is a relevant predictor when predicting poverty rate (although not the only factor) .
+
+**Model assumptions**: Our diagnostic plots show us several violations of the classical linear regression assumptions. Linearity appears reasonable from the @fig-pov-scatter, but independence of errors is unlikely given clustering in @fig-pov-resids, and the residuals show variability and non-normality in @fig-pov-resids and @fig-pov-qq. If the residuals were approximately normal, the black dots would fall close to the straight diagonal line of the Q-Q plot. With thousands of tracts, coefficient estimates are stable, but standard errors may be understated under OLS assumptions. However, the plot bends upwards both in the lower and upper tails. These issues limit the precision of our inference and confidence interval. Additionally, the histogram of residuals (@fig-pov-histo) appears approximately bell-shaped and centered near zero, which supports the assumption that the errors have mean zero. However, the distribution is not perfectly symmetric: the right tail is longer than the left, and there are some extreme positive residuals. This indicates mild right skew and the presence of high-poverty tracts where the model underpredicts. While the residuals do not follow a perfect normal distribution, the large sample size (n = `r n_obs`) reduces concerns about inference validity due to the Central Limit Theorem. Nevertheless, the skewness suggests that robust standard errors or a variance-stabilizing transformation (e.g., square-root of the response) might provide more reliable inference in future analyses. Overall though, the non-normality and changes in variance, our 95% confidence interval should only be drawn cautiously, so we might want to consider using more robust standard errors.
+
+**Comparing education and unemployment**: When we added unemployment to the model, it did not meaningfully change the estimated effect of education. The unemployment has a weaker positive association with poverty, but the education coefficient remains consequential. This result challenges a possible assumption that unemployment is a primary driver of poverty. We see from @fig-pov-other that a high percentage of individuals are employed but remain below twice the federal poverty threshold @OEHHA2021 set. This indicates situations where many individuals are working but still fall below the poverty threshold here. By comparison, educational attainment shows a stronger and more consistent relationship with poverty, which highlights its relevance as a key factor of socioeconomic well-being.
+
+Generally speaking, the simple linear regression analysis for this research question can only draw questionable inferences, so the linear regression is likely not a full picture of the relationship between education and poverty. With that being said, we did see that the positive correlation in the linear regression model is likely statistically significant due to the p-value and $R^2$ value. Therefore, there is a positive relationship between low education attainment percentage and poverty rate percentage. 
+
+**Implications**: We see that the findings support noting education as a factor in determining predictors of poverty in datasets like CalEnviroScreen, which are used to identify communities experiencing socioeconomic and environmental burdens. Policymakers and advocates can use this data to inform investments in education, workforce support, and pollution reduction to advance environmental justice and public health.
+
+**Limitations**: We used cross-sectional, observational data, which limits our causal inferences. The nature of tract-level geographical dependence of the data likely violates the independence assumption. Additionally, the bounded percentage outcomes produce heteroskedasticity. Finally the ACS sampling error introduces measurement error. 
+
+On a broader level, a limitation of our analysis is the definition of poverty. CalEnviroScreen uses 200% of the federal poverty level (FPL) to account for California’s high cost of living. This is a more appropriate benchmark than the unadjusted FPL, it does not capture wide regional differences within the state. For example, housing costs in the Bay Area vs rural areas of California have a large range. Consequently, the same income threshold may reflect very different levels of economic hardship depending on location. This limitation means that our poverty measure may overstate poverty in some rural areas and understate it in high-cost metropolitan regions, which could feasibly introduce additional variation not explained by education or unemployment in our models.
+Another limitation is that the education measure applies only to adults aged 25 and older, but the poverty measure covers the entire population. This mismatch means that our predictor and outcome are not measured on exactly the same group. For example, tracts with many children in poverty but relatively well-educated adults could weaken the observed association. On the other side, tracts with low adult education may experience higher poverty rates even among children and elderly residents who are not part of the education measure. This difference in denominators introduces another possible measurement error into our regression.
 
 
-QQplot discussion:
-The raw model Q???Q plot looks so extreme because of how the response variable (pov) behaves and how OLS residuals are distributed in this case:
-*Bounded outcome (0???100%) - Poverty rates are percentages. However, OLS assumes residuals are normal and unbounded, but this data is bounded between 0 and 100, which creates skew and heavy tails.
-
-*The variance in poverty rates is not constant across education levels. Residuals fan out, so the tails get much thicker than a normal distribution would expect. That???s why the vertical axis in the Q???Q plot is so stretched.
-
-*Outliers / high leverage points: Some census tracts have unusually high poverty (50%+), while most are low. Those extremes likely dominate the residual distribution, pulling the top quantiles way off the line.
-
-These are potential reasons why the left qq-pplot (???Raw model???) shows almost a vertical line of points, instead of following the diagonal reference. The residual distribution is far from normal, which is too skewed and too heavy-tailed to trust the normality of errors in this linear regression model. However, when we use sqrt(Y) (the right plot), the residuals lined up more smoothly. That???s because the square-root transform stabilizes variance, pulls in the long right tail (very high poverty rates),and makes residuals more symmetric.
 
 # References
