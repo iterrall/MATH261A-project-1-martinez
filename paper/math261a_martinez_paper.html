@@ -134,22 +134,22 @@ window.Quarto = {
 
 <section id="sec-intro" class="level1">
 <h1>Introduction</h1>
-<p>The link between educational attainment to socioeconomic well-being has been widely corroborated in research (for example, <span class="citation" data-cites="cutler2006education">Cutler and Lleras-Muney (<a href="#ref-cutler2006education" role="doc-biblioref">2006</a>)</span> and <span class="citation" data-cites="zajacova2018">Zajacova and Lawrence (<a href="#ref-zajacova2018" role="doc-biblioref">2018</a>)</span>). The persistent geographic inequities California faces drives the need for us to take a closer look at how education relates to poverty when related to location. Therefore, using the CalEnviroScreen 4.0 dataset, <span class="citation" data-cites="oehha_calenviroscreen_dataset">(<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">Office of Environmental Health Hazard Assessment (OEHHA) n.d.</a>)</span>, we ask the following question in this project: <strong>To what extent is tract-level poverty associated with low levels of education in California?</strong>.</p>
-<p>Understanding this question can be an important way to learn poverty disparity mitigation techniques within communities to improve health, since low socioeconomic status has been tied to multiple environmental risks and health disparities <span class="citation" data-cites="OEHHA2021">(<a href="#ref-OEHHA2021" role="doc-biblioref">California Office of Environmental Health Hazard Assessment (OEHHA) 2021b</a>)</span>.</p>
+<p>The link between educational attainment to socioeconomic well-being has been widely corroborated in research (for example, <span class="citation" data-cites="cutler2006education">Cutler and Lleras-Muney (<a href="#ref-cutler2006education" role="doc-biblioref">2006</a>)</span> and <span class="citation" data-cites="zajacova2018">Zajacova and Lawrence (<a href="#ref-zajacova2018" role="doc-biblioref">2018</a>)</span>). The persistent geographic inequities California faces drives the need for us to take a closer look at how education relates to poverty when related to location. Therefore, using the CalEnviroScreen 4.0 dataset, <span class="citation" data-cites="oehha_calenviroscreen_dataset">(<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">Office of Environmental Health Hazard Assessment (OEHHA) 2021</a>)</span>, we ask the following question in this project: <strong>To what extent is tract-level poverty associated with low levels of education in California?</strong>.</p>
+<p>Understanding this question can be an important way to learn poverty disparity mitigation techniques within communities to improve health, since low socioeconomic status has been tied to multiple environmental risks and health disparities <span class="citation" data-cites="OEHHA2021">Morello-Frosch and Shenassa (<a href="#ref-morello2006environmental" role="doc-biblioref">2006</a>)</span>.</p>
 <p>We address this question by fitting a simple linear regression by taking poverty rate as a function of percentage of adults lacking a high school diploma. We then extend the analysis by exploring the contribution of unemployment makes on the model and examining the robustness of linear regression model assumptions.</p>
 <p>The remainder of this paper is structured as follows: <a href="#sec-data" class="quarto-xref">Section&nbsp;2</a> discusses the data, <a href="#sec-methods" class="quarto-xref">Section&nbsp;3</a> the model and the methods we used, <a href="#sec-results" class="quarto-xref">Section&nbsp;4</a> presents the results, and <a href="#sec-discussion" class="quarto-xref">Section&nbsp;5</a> discusses the conclusions in addition to weaknesses with the conclusions from this model.</p>
 </section>
 <section id="sec-data" class="level1">
 <h1>Data</h1>
-<p>In 2021, The California Environmental Protection Agency published its most recent version of the California Communities Environmental Health Screening tool, which is also known as CalEnviroScreen 4.0 <span class="citation" data-cites="OEHHA_MapsData">(<a href="#ref-OEHHA_MapsData" role="doc-biblioref">California Office of Environmental Health Hazard Assessment (OEHHA) 2021a</a>)</span>. Since its original release in 2013, CalEnviroScreen has compiled and analyzed census-tract data in California. While its primary focus is to better understand and address environmental concerns in California communities, we can learn a great deal from the raw data that can be found on the CalEnviroScreen Data Hub <span class="citation" data-cites="oehha_calenviroscreen_dataset">(<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">Office of Environmental Health Hazard Assessment (OEHHA) n.d.</a>)</span> about possible socioeconomic well-being predictors and outcomes. There is a wealth of information around geospatial data that can be used to drive more equitable decision-making by exploring possible factors that play a role in changes to poverty levels.</p>
+<p>In 2021, The California Environmental Protection Agency published its most recent version of the California Communities Environmental Health Screening tool, which is also known as CalEnviroScreen 4.0 <span class="citation" data-cites="OEHHA_MapsData">(<a href="#ref-OEHHA_MapsData" role="doc-biblioref">California Office of Environmental Health Hazard Assessment (OEHHA) 2021a</a>)</span>. Since its original release in 2013, CalEnviroScreen has compiled and analyzed census-tract data in California. While its primary focus is to better understand and address environmental concerns in California communities, we can learn a great deal from the raw data that can be found on the CalEnviroScreen Data Hub <span class="citation" data-cites="oehha_calenviroscreen_dataset">(<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">Office of Environmental Health Hazard Assessment (OEHHA) 2021</a>)</span> about possible socioeconomic well-being predictors and outcomes. There is a wealth of information around geospatial data that can be used to drive more equitable decision-making by exploring possible factors that play a role in changes to poverty levels.</p>
 <p>We use the data from CalEnviroScreen 4.0 that uses data from the US Census Bureau’s American Community Survey (ACS) that collects information on educational attainment annually <span class="citation" data-cites="OEHHA2021">(<a href="#ref-OEHHA2021" role="doc-biblioref">California Office of Environmental Health Hazard Assessment (OEHHA) 2021b</a>)</span>.</p>
-<p>This dataset provides socioeconomic, health, and environmental measures, and our observational units are census tracts in California. For this analysis, we focus on the 2019 values of socioeconomic indicators from the <span class="citation" data-cites="oehha_calenviroscreen_dataset">Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">n.d.</a>)</span>:</p>
+<p>This dataset provides socioeconomic, health, and environmental measures, and our observational units are census tracts in California. For this analysis, we focus on the 2019 values of socioeconomic indicators from the <span class="citation" data-cites="oehha_calenviroscreen_dataset">Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">2021</a>)</span>:</p>
 <ul>
 <li><p><strong>Poverty (pov)</strong>: Percent of the population living below two times the federal poverty level (5-year estimate, 2015-2019) within each California census tract. Multiplying the federal poverty level is to account for the high cost of living in California.</p></li>
 <li><p><strong>Education (edu)</strong>: Percent of adults that are 25+ years old without a high school diploma. This percentage was derived as 100 minus the share of adults with high school or higher education levels (estimated over 5 years, 2015-2019)</p></li>
 <li><p><strong>Unemployment (unemp)</strong>: Percent of the labor force that is unemployed.</p></li>
 </ul>
-<p>The data on educational attainment and poverty come 5-year estimates from 2015–2019 that come from the American Community Survey (ACS) (<span class="citation" data-cites="acs_tech">U.S. Census Bureau (<a href="#ref-acs_tech" role="doc-biblioref">2014</a>)</span>; <span class="citation" data-cites="census_portal">U.S. Census Bureau (<a href="#ref-census_portal" role="doc-biblioref">n.d.</a>)</span>) and were presented within the <span class="citation" data-cites="oehha_calenviroscreen_dataset">Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">n.d.</a>)</span> dataset. We follow OEHHA’s indicator methods (<span class="citation" data-cites="OEHHA2021">California Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-OEHHA2021" role="doc-biblioref">2021b</a>)</span>), and we note that ACS estimates include margins of error. OEHHA uses standard error and corresponding SE screening to flag unreliable tracts. We remove tracts with missing values in our analysis, with a total of 7906 for our primary model and 7658 for our model including unemployment as a variable. All variables are percentages in between 0 and 100, facilitating coefficient interpretation as percentage-point changes. which facilitates our coefficient interpretation as changes in percentage-point.</p>
+<p>The data on educational attainment and poverty come 5-year estimates from 2015–2019 that come from the American Community Survey (ACS) (<span class="citation" data-cites="acs_tech">U.S. Census Bureau (<a href="#ref-acs_tech" role="doc-biblioref">2014</a>)</span>; <span class="citation" data-cites="census_portal">U.S. Census Bureau (<a href="#ref-census_portal" role="doc-biblioref">n.d.</a>)</span>) and were presented within the <span class="citation" data-cites="oehha_calenviroscreen_dataset">Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-oehha_calenviroscreen_dataset" role="doc-biblioref">2021</a>)</span> dataset. We follow OEHHA’s indicator methods (<span class="citation" data-cites="OEHHA2021">California Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-OEHHA2021" role="doc-biblioref">2021b</a>)</span>), and we note that ACS estimates include margins of error. OEHHA uses standard error and corresponding SE screening to flag unreliable tracts. We remove tracts with missing values in our analysis, with a total of 7906 for our primary model and 7658 for our model including unemployment as a variable. All variables are percentages in between 0 and 100, facilitating coefficient interpretation as percentage-point changes. which facilitates our coefficient interpretation as changes in percentage-point.</p>
 <p>Our interpretation of regression coefficients are represented as marginal changes in poverty rate per one-percentage-point change in education or unemployment. Possible limitations include rounding of reported percentages, geographic clustering effects not captured by the model, and the bounded nature of the data (0–100%), which can produce heteroskedastic residuals in linear regression.</p>
 <div class="cell">
 <div id="tbl-summ" class="cell quarto-float quarto-figure quarto-figure-center anchored">
@@ -214,128 +214,131 @@ Table&nbsp;1: Descriptive summaries for key variables (tract level).
 </figure>
 </div>
 </div>
-<p>Descriptive summaries show that poverty rates, education, and unemployment are all highly variable across tracts as shown in the table <a href="#tbl-summ" class="quarto-xref">Table&nbsp;1</a> that reports key summaries from our data. A scatterplot of poverty versus education (<a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>) suggests a positive linear trend, while unemployment also shows a positive but weaker association with poverty (<a href="#fig-pov-other" class="quarto-xref">Figure&nbsp;5</a>).</p>
+<p>Descriptive summaries show that poverty rates, education, and unemployment are all highly variable across tracts as shown in the table <a href="#tbl-summ" class="quarto-xref">Table&nbsp;1</a> that reports key summaries from our data. A scatterplot of poverty versus education (<a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>) suggests a positive linear trend, while unemployment also shows a positive but weaker association with poverty (<a href="#fig-pov-other" class="quarto-xref">Figure&nbsp;2</a>).</p>
 </section>
 <section id="sec-methods" class="level1">
 <h1>Methods</h1>
 <p>To investigate the relationship between poverty rates and educational attainment, we adopt a simple linear regression model with poverty as the response and low-educational rate as the predictor. Let <span class="math inline">\(Y_i\)</span> denote the percentage of the population living under the poverty threshold in census tract <span class="math inline">\(i\)</span>, and let <span class="math inline">\(X_i\)</span> denote the percentage of adults without a high-school diploma in the same tract.</p>
 <p><span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \varepsilon_i \text{ for }i=1,...,n\]</span></p>
-<p>where <span class="math inline">\(\beta_0\)</span> (the intercept) represents the expected poverty rate in a census tract when <span class="math inline">\(X_i=0\)</span>, or when 0% of the adult population is living without a high school diploma. Additionally, <span class="math inline">\(\beta_1\)</span> represents the marginal change in poverty (percentage points) for one point increase in <span class="math inline">\(X_i\)</span>, or adults without a high school diploma. Finally, <span class="math inline">\(\varepsilon_i\)</span> denotes a random error term that encapsulates unobserved factors that impact poverty rates not explained by low-educational attainment percentage. In other words, we estimate a simple linear regression pov =<span class="math inline">\(\beta_0 + \beta_1\)</span>(edu) + <span class="math inline">\(\varepsilon\)</span> using OLS in R <span class="citation" data-cites="R2024">(<a href="#ref-R2024" role="doc-biblioref">R Core Team 2024</a>)</span>. In our data (n = 7906), the estimated intercept is <span class="math inline">\(\hat{\beta_0}}\)</span>= 14.255 and estimated slope is <span class="math inline">\(\hat{\beta_1}}=\)</span> 0.979. In a supplementary model including unemployment, the fitted slope for education is with number of tracts equaling 7658 , the estimated intercept is <span class="math inline">\(\hat{\beta_0}*}=\)</span> 7.91 and estimated slope is <span class="math inline">\(\hat{\beta_1}*}=\)</span> 0.838 with <span class="math inline">\(R^2\)</span> = 0.688.</p>
-<p>The parameters of the model (<span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>) are estimated using ordinary least squares, or OLS. We estimate parameters with ordinary least squares (OLS) with R (version 4.5.1) <span class="citation" data-cites="R2024">(<a href="#ref-R2024" role="doc-biblioref">R Core Team 2024</a>)</span> using the built-in lm() function, which fits linear regression models by OLS. The basic syntax is lm(response ~ predictor, data = dataset), and in our case the function lm(pov ~ edu, data = to_analyze_df). This instructs R to regress the poverty rate (pov) on the percentage of adults without a high school diploma (edu) using the dataset that we have turned into a cleaned dataframe that omits null values. Here, pov is the response variable (dependent variable),edu is the predictor variable (independent variable), and the ~ operator indicates the model formula, meaning “pov” is modeled as a function of “edu”. The function estimates the intercept <span class="math inline">\(\beta_0\)</span> and slope <span class="math inline">\(\beta_1\)</span> by minimizing the sum of squared residuals. By default, lm() returns a model object that contains the estimated coefficients, residuals, fitted values, and summary statistics, which we accessed using functions such as summary() and coef().</p>
-<p>To assess model fit, we report the estimated regression coefficients, standard errors, and coefficient of determination(<span class="math inline">\(R^2\)</span>), and the associated confidence interval with our the correlation. We also present a scatterplot (<a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>)of the data with the fitted regression line and a confidence band, which provides a visual assessment of model fit. As a robustness check, we fit a supplemental multiple linear regression including unemployment: <span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \beta_2U_i +\varepsilon_i \text{ for }i=1,...,n\]</span> where <span class="math inline">\(U_i\)</span> represents the unemployment percentage, and <span class="math inline">\(beta_2\)</span> is the slope on unemployment. This would be the expected change in the poverty rate for 1 percentage-point increase in unemployment, if education level is constant.</p>
-<p>For this OLS, we adopt the standard assumptions of the linear regression model: <strong>1. Linearity</strong>: The relationship between educational attainment and poverty is linear.</p>
+<p>where <span class="math inline">\(\beta_0\)</span> (the intercept) represents the expected poverty rate in a census tract when <span class="math inline">\(X_i=0\)</span>, or when 0% of the adult population is living without a high school diploma. Additionally, <span class="math inline">\(\beta_1\)</span> represents the marginal change in poverty (percentage points) for one point increase in <span class="math inline">\(X_i\)</span>, or adults without a high school diploma. Finally, <span class="math inline">\(\varepsilon_i\)</span> denotes a random error term that encapsulates unobserved factors that impact poverty rates not explained by low-educational attainment percentage. In other words, we estimate a simple linear regression pov =<span class="math inline">\(\beta_0 + \beta_1\)</span>(edu) + <span class="math inline">\(\varepsilon\)</span> using OLS in R <span class="citation" data-cites="R2024 gelman_regression_2021 kutner2005">(<a href="#ref-R2024" role="doc-biblioref">R Core Team 2024</a>; <a href="#ref-gelman_regression_2021" role="doc-biblioref">Gelman, Hill, and Vehtari 2021</a>; <a href="#ref-kutner2005" role="doc-biblioref">Kutner et al. 2005</a>)</span>.</p>
+<p>In our data (number of tracts = 7906), the estimated intercept is <span class="math inline">\(\hat{\beta_0}\)</span>= 14.255 and estimated slope is <span class="math inline">\(\hat{\beta_1}\)</span>=0.979. In a supplementary model including unemployment, the fitted slope for education is with number of tracts equaling 7658 , the estimated intercept is <span class="math inline">\(\hat{\beta_0}=\)</span> 7.91 and estimated slope is <span class="math inline">\(\hat{\beta_1}=\)</span> 0.838 with <span class="math inline">\(R^2\)</span> = 0.688.</p>
+<p>The parameters of the model (<span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>) are estimated using ordinary least squares, or OLS. We estimate parameters with ordinary least squares (OLS) with R (version 4.5.1) <span class="citation" data-cites="R2024 kutner2005">(<a href="#ref-R2024" role="doc-biblioref">R Core Team 2024</a>; <a href="#ref-kutner2005" role="doc-biblioref">Kutner et al. 2005</a>)</span> using the built-in lm() function, which fits linear regression models by OLS. The basic syntax is lm(response ~ predictor, data = dataset), and in our case the function lm(pov ~ edu, data = to_analyze_df). This instructs R to regress the poverty rate (pov) on the percentage of adults without a high school diploma (edu) using the dataset that we have turned into a cleaned dataframe that omits null values. Here, pov is the response variable (dependent variable),edu is the predictor variable (independent variable), and the ~ operator indicates the model formula, meaning “pov” is modeled as a function of “edu”. The function estimates the intercept <span class="math inline">\(\beta_0\)</span> and slope <span class="math inline">\(\beta_1\)</span> by minimizing the sum of squared residuals. By default, lm() returns a model object that contains the estimated coefficients, residuals, fitted values, and summary statistics, which we accessed using functions such as summary() and coef().</p>
+<p>To assess model fit, we report the estimated regression coefficients, standard errors, and coefficient of determination (<span class="math inline">\(R^2\)</span>), and the associated confidence interval with our the correlation. We also present a scatterplot (<a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>)of the data with the fitted regression line and a confidence band, which provides a visual assessment of model fit. As a robustness check, we fit a supplemental multiple linear regression including unemployment:</p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1X_i + \beta_2U_i +\varepsilon_i \text{ for }i=1,...,n\]</span></p>
+<p>where <span class="math inline">\(U_i\)</span> represents the unemployment percentage, and <span class="math inline">\(\beta_2\)</span> is the slope on unemployment. This would be the expected change in the poverty rate for 1 percentage-point increase in unemployment, if education level is constant.</p>
+<p>For this OLS, we adopt the standard assumptions of the linear regression model:</p>
+<p><strong>1. Linearity</strong>: The relationship between educational attainment and poverty is linear.</p>
 <p><strong>2. Independence of errors</strong>: The error terms <span class="math inline">\(\varepsilon_i\)</span> are independent between different census tracts.</p>
 <p><strong>3. Constant variance</strong>: the error terms have constant variance across values of <span class="math inline">\(X_i\)</span> (the low-educational attainment rate for census tract <span class="math inline">\(i\)</span>).</p>
 <p><strong>4. Normality of residuals</strong>: the residuals are approximately normally distributed, meaning the error terms have a mean of zero and are normally distributed.</p>
 <p>Because rates are bounded between 0 and 100, having a constant variance is unlikely. Therefore, we complete the following diagnostics and note implications for inference to evaluate whether the model comply with the assumptions of linear regression:</p>
 <ul>
-<li><p><strong>Residual plot</strong>: We examine a scatterplot of residuals versus fitted values (<a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>) to assess linearity, independence of errors, and constant variance. A random scatter of residuals would indicate that the linearity and constant variance assumptions are reasonable.</p></li>
-<li><p><strong>Normality of residuals</strong>: We use a Q–Q plot (<a href="#fig-pov-qq" class="quarto-xref">Figure&nbsp;3</a>) and a histogram of residuals (<a href="#fig-pov-histo" class="quarto-xref">Figure&nbsp;4</a>) to check whether they approximately follow a normal distribution. Additionally, we inspected other factors on poverty rates that were contained in the dataset such as unemployment (<a href="#fig-pov-other" class="quarto-xref">Figure&nbsp;5</a>). Overall, the diagnostics provide evidence about the level of estimated coefficient reliability and inference validity from the model. Any violations of assumptions are noted and discussed in <a href="#sec-results" class="quarto-xref">Section&nbsp;4</a> and <a href="#sec-discussion" class="quarto-xref">Section&nbsp;5</a>.</p></li>
+<li><p><strong>Residual plot</strong>: We examine a scatterplot of residuals versus fitted values (<a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>) to assess linearity, independence of errors, and constant variance <span class="citation" data-cites="Wickham2016">(<a href="#ref-Wickham2016" role="doc-biblioref">Wickham 2016</a>)</span>. A random scatter of residuals would indicate that the linearity and constant variance assumptions are reasonable.</p></li>
+<li><p><strong>Normality of residuals</strong>: We use a Q–Q plot (<a href="#fig-pov-qq" class="quarto-xref">Figure&nbsp;4</a>) using <span class="citation" data-cites="R2024">R Core Team (<a href="#ref-R2024" role="doc-biblioref">2024</a>)</span> and a histogram of residuals (<a href="#fig-pov-histo" class="quarto-xref">Figure&nbsp;5</a>) using <span class="citation" data-cites="Wickham2016">Wickham (<a href="#ref-Wickham2016" role="doc-biblioref">2016</a>)</span> to check whether they approximately follow a normal distribution. Additionally, we inspected other factors on poverty rates that were contained in the dataset such as unemployment (<a href="#fig-pov-other" class="quarto-xref">Figure&nbsp;2</a>) <span class="citation" data-cites="Wickham2016">(<a href="#ref-Wickham2016" role="doc-biblioref">Wickham 2016</a>)</span>. Overall, the diagnostics provide evidence about the level of estimated coefficient reliability and inference validity from the model. Any violations of assumptions are noted and discussed in <a href="#sec-results" class="quarto-xref">Section&nbsp;4</a> and <a href="#sec-discussion" class="quarto-xref">Section&nbsp;5</a>.</p></li>
 </ul>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-pov-scatter" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pov-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="math261a_martinez_paper_files/figure-html/fig-pov-scatter-1.png" id="fig-pov-scatter" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-pov-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-pov-resids" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pov-resids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="math261a_martinez_paper_files/figure-html/fig-pov-resids-1.png" id="fig-pov-resids" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-pov-resids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-pov-qq" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pov-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="math261a_martinez_paper_files/figure-html/fig-pov-qq-1.png" id="fig-pov-qq" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-pov-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-pov-histo" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pov-histo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="math261a_martinez_paper_files/figure-html/fig-pov-histo-1.png" id="fig-pov-histo" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-pov-histo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-pov-other" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pov-other-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="math261a_martinez_paper_files/figure-html/fig-pov-other-1.png" id="fig-pov-other" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-pov-other-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<p>We conducted all analyses R <span class="citation" data-cites="R2024">(<a href="#ref-R2024" role="doc-biblioref">R Core Team 2024</a>)</span>, and regression models were estimated using the base R function <code>lm()</code>. The model summaries and tidy coefficient tables were generated with the <code>broom</code> package <span class="citation" data-cites="robinson2014broom">(<a href="#ref-robinson2014broom" role="doc-biblioref">Robinson 2014</a>)</span>. We used dplyr <span class="citation" data-cites="Wickham2016">(<a href="#ref-Wickham2016" role="doc-biblioref">Wickham 2016</a>)</span> (part of the tidyverse) to clean the raw data, and we formatted tables with <span class="citation" data-cites="Xie2015.We">(<a href="#ref-Xie2015.We" role="doc-biblioref"><strong>Xie2015.We?</strong></a>)</span> produced visualizations with <code>ggplot2</code> <span class="citation" data-cites="Wickham2016">(<a href="#ref-Wickham2016" role="doc-biblioref">Wickham 2016</a>)</span>, with additional support from <code>scales</code> <span class="citation" data-cites="scales">Wickham and Seidel (<a href="#ref-scales" role="doc-biblioref">2022</a>)</span> for scaling and <span class="citation" data-cites="qqplotr">Nascimento (<a href="#ref-qqplotr" role="doc-biblioref">2019</a>)</span> for Q–Q plotting. Together, these packages helped us create data cleaning, regression modeling, and visualization that can be reproducible.</p>
 </section>
 <section id="sec-results" class="level1">
 <h1>Results</h1>
 <p>The simple linear regression of poverty level on education yields the following fitted model:</p>
-<p><span class="math inline">\(\widehat{pov}=\)</span> 14.255 <span class="math inline">\(+\)</span> 0.979 (edu) with $R^2 = $0.616 and <span class="math inline">\(n=\)</span> 7906.</p>
+<p><span class="math inline">\(\widehat{pov}=\)</span> 14.255 <span class="math inline">\(+\)</span> 0.979 <span class="math inline">\(\times(edu)\)</span> with <span class="math inline">\(R^2=\)</span> 0.616 and number of tracts = 7906.</p>
 <p><strong>Here is our interpretation of the coefficients</strong>:</p>
 <ul>
-<li><p>The intercept <span class="math inline">\(\beta_0 \approx\)</span> 14.255, so for a tract with 100% of its adults holding at least a high school diploma (or 0% lacking one), this model would predict the poverty rate to be an average of <code>paste0(round(intercept, 2), "%")</code> in that tract.</p></li>
+<li><p>The intercept <span class="math inline">\(\beta_0 \approx\)</span> 14.255, so for a tract with 100% of its adults holding at least a high school diploma (or 0% lacking one), this model would predict the poverty rate to be an average of 14.26% in that tract.</p></li>
 <li><p>The slope <span class="math inline">\(\beta_1 \approx\)</span> 0.979. In other words, each one-percent increase in adults without a high-school diploma per census tract corresponds to an average 0.98% increase in poverty rate in that tract.</p></li>
-<li><p>The model fit $R^2=$0.62, so about 61.59% of the variation in the poverty rate we are measuring is explained by low-education attainment percentage within a census-tract.</p></li>
-<li><p>The rounded <span class="math inline">\(p\)</span>-value for education is &lt;2e-16 (<span class="math inline">\(p &lt; 0.001\)</span>), which is far below common thresholds. This indicates that the observed data is not more extreme than the rejection region and the association is statistically significant (meaning this is very unlikely due to chance). Therefore, both coefficients are noteworthy. .</p></li>
+<li><p>The model fit <span class="math inline">\(R^2=\)</span> 0.62, so about 61.59% of the variation in the poverty rate we are measuring is explained by low-education attainment percentage within a census-tract.</p></li>
+<li><p>The rounded <span class="math inline">\(p\)</span>-value for education is &lt;2e-16 (<span class="math inline">\(p &lt; 0.001\)</span>), which is far below common thresholds. This indicates that the observed data is not more extreme than the rejection region and the association is statistically significant (meaning this is very unlikely due to chance). Therefore, both coefficients are noteworthy.</p></li>
 </ul>
-<p>We added a <strong>supplemental model</strong> with unemployment included to measure if another factor changes our results significantly. The education effect remains positive (0.838), and overall fit improves minimally (<span class="math inline">\(R^2 =\)</span> 0.688, <span class="math inline">\(n = r n_obs2\)</span>). When unemployment was added to the regression, the coefficient for education remained remarkable, but unemployment showed a weaker association with poverty. The overall model fit improved only slightly with the increase in <span class="math inline">\(R^2\)</span>. This suggests that differences in unemployment rates across tracts do not account for most of the variation in poverty once educational attainment is considered.</p>
-<p>From our model, we find a 95% confidence interval for the education slope is approximately equal to [0.96, 1]. This means we are 95% confident that for each additional percentage point increase in adults without a high school diploma, the poverty rate of the same census tract will increase between 96.17% and <code>round(confint(lm_fit)[2,2], 2)</code>%.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pov-scatter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pov-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="math261a_martinez_paper_files/figure-html/fig-pov-scatter-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pov-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Scatter plot of percentage of adults without a high school diploma by California census-tract (x-axis) and percentage of population in same tract living under two times the Federal poverty line (FPL) (y-axis) with fitted linear regression model.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We added a <strong>supplemental model</strong> with unemployment included to measure if another factor changes our results significantly. The education effect remains positive (0.838), and overall fit improves minimally (<span class="math inline">\(R^2 =\)</span> 0.688, number of tracts 7658). When unemployment was added to the regression, the coefficient for education remained remarkable, but unemployment showed a weaker association with poverty. The overall model fit improved only slightly with the increase in <span class="math inline">\(R^2\)</span>. This suggests that differences in unemployment rates across tracts do not account for most of the variation in poverty once educational attainment is considered.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pov-other" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pov-other-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="math261a_martinez_paper_files/figure-html/fig-pov-other-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pov-other-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Education vs.&nbsp;poverty with points colored by unemployment. The black line shows the simple OLS fit of poverty on education only; color reveals that higher-unemployment tracts tend to lie higher in the scatter, but the fitted line does not adjust for unemployment.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>From our model, we find a 95% confidence interval for the education slope is approximately equal to [0.96166, 0.99574]. This means we are 95% confident that for each additional percentage point increase in adults without a high school diploma, the poverty rate of the same census tract will increase between 0.96166 and 0.99574 percentage points.</p>
+<p>Below, we use visualize the diagnostics to help with our assessment of the validity of our confidence interval for our primary simple regression:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pov-resids" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pov-resids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="math261a_martinez_paper_files/figure-html/fig-pov-resids-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pov-resids-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Scatter plot of fitted values (x-axis) and residuals (y-axis) for a simple linear regression with poverty (percentage of population in census-tract living under two times the Federal poverty line - FPL) as the response and education (percentage of adults without a high school diploma) in same tract by the predictor.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pov-qq" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pov-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="math261a_martinez_paper_files/figure-html/fig-pov-qq-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pov-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Normal Q–Q plot for the primary model’s residuals with poverty as the poverty percentage as response and education as the predictor. If residuals were normally distributed, the points would closely follow the reference line. Any curvature and deviations in the tails suggest that the residuals are not perfectly normal, with evidence of skewness and heavy tails.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pov-histo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pov-histo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="math261a_martinez_paper_files/figure-html/fig-pov-histo-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pov-histo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Histogram of regression residuals. A normal distribution of errors would appear bell-shaped and symmetric around zero. Any residuals that display skewness and heavy tails, indicate that the normality assumption is not fully satisfied.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Additionally, we conduct a hypothesis test to formally evaluate whether education is associated with poverty. Let our type I error rate be <span class="math inline">\(\alpha = 0.05\)</span>. Let us test the following hypotheses:</p>
 <p><span class="math inline">\(H_0\)</span>: <span class="math inline">\(\beta_1 = 0\)</span> (no relationship between education and poverty) vs.&nbsp;<span class="math inline">\(H_a\)</span>: <span class="math inline">\(\beta_1 \neq 0\)</span>.</p>
-<p>The t-test for the education coefficient yields a large test statistic (<span class="math inline">\(t \approx 113\)</span>) with a p-value less than 0.001. Because the p-value $ &lt; = 0.05$, we reject <span class="math inline">\(H_0\)</span> and conclude that low educational attainment is associated with higher poverty rates at the census tract level. As an additional note, when unemployment is included in the supplemental model, the education effect remains relevant, while the unemployment coefficient is comparatively weaker. This suggests that unemployment alone does not explain most of the variation in poverty once education is accounted for.</p>
+<p>The t-test for the education coefficient yields a large test statistic (<span class="math inline">\(t \approx 113\)</span>) with a p-value less than 0.001. Because the p-value <span class="math inline">\(&lt;\alpha=0.05\)</span>, we reject <span class="math inline">\(H_0\)</span> and conclude that low educational attainment is associated with higher poverty rates at the census tract level. As an additional note, when unemployment is included in the supplemental model, the education effect remains relevant, while the unemployment coefficient is comparatively weaker. This suggests that unemployment alone does not explain most of the variation in poverty once education is accounted for.</p>
 </section>
 <section id="sec-discussion" class="level1">
 <h1>Discussion</h1>
 <p><strong>Summary</strong>: The slope is positive and statistically significant, so we can conclude that the poverty rate tends to be higher in locations where there is a higher percentage of adults with lower levels of education than high school diplomas. If the linear regression assumptions are true, the results we see in <a href="#sec-results" class="quarto-xref">Section&nbsp;4</a> indicate a moderate effect size in the data that suggest low-education attainment is a relevant predictor when predicting poverty rate (although not the only factor) .</p>
-<p><strong>Model assumptions</strong>: Our diagnostic plots show us several violations of the classical linear regression assumptions. Linearity appears reasonable from the <a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>, but independence of errors is unlikely given clustering in <a href="#fig-pov-resids" class="quarto-xref">Figure&nbsp;2</a>, and the residuals show variability and non-normality in <a href="#fig-pov-resids" class="quarto-xref">Figure&nbsp;2</a> and <a href="#fig-pov-qq" class="quarto-xref">Figure&nbsp;3</a>. If the residuals were approximately normal, the black dots would fall close to the straight diagonal line of the Q-Q plot. With thousands of tracts, coefficient estimates are stable, but standard errors may be understated under OLS assumptions. However, the plot bends upwards both in the lower and upper tails. These issues limit the precision of our inference and confidence interval. Additionally, the histogram of residuals (<a href="#fig-pov-histo" class="quarto-xref">Figure&nbsp;4</a>) appears approximately bell-shaped and centered near zero, which supports the assumption that the errors have mean zero. However, the distribution is not perfectly symmetric: the right tail is longer than the left, and there are some extreme positive residuals. This indicates mild right skew and the presence of high-poverty tracts where the model underpredicts. While the residuals do not follow a perfect normal distribution, the large sample size (n = 7906) reduces concerns about inference validity due to the Central Limit Theorem. Nevertheless, the skewness suggests that robust standard errors or a variance-stabilizing transformation (e.g., square-root of the response) might provide more reliable inference in future analyses. Overall though, the non-normality and changes in variance, our 95% confidence interval should only be drawn cautiously, so we might want to consider using more robust standard errors.</p>
-<p><strong>Comparing education and unemployment</strong>: When we added unemployment to the model, it did not meaningfully change the estimated effect of education. The unemployment has a weaker positive association with poverty, but the education coefficient remains consequential. This result challenges a possible assumption that unemployment is a primary driver of poverty. We see from <a href="#fig-pov-other" class="quarto-xref">Figure&nbsp;5</a> that a high percentage of individuals are employed but remain below twice the federal poverty threshold <span class="citation" data-cites="OEHHA2021">California Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-OEHHA2021" role="doc-biblioref">2021b</a>)</span> set. This indicates situations where many individuals are working but still fall below the poverty threshold here. By comparison, educational attainment shows a stronger and more consistent relationship with poverty, which highlights its relevance as a key factor of socioeconomic well-being.</p>
+<p><strong>Model assumptions</strong>: Our diagnostic plots show us several violations of the classical linear regression assumptions. Linearity appears reasonable from the <a href="#fig-pov-scatter" class="quarto-xref">Figure&nbsp;1</a>, but independence of errors is unlikely given clustering in <a href="#fig-pov-resids" class="quarto-xref">Figure&nbsp;3</a>, and the residuals show variability and non-normality in <a href="#fig-pov-resids" class="quarto-xref">Figure&nbsp;3</a> and <a href="#fig-pov-qq" class="quarto-xref">Figure&nbsp;4</a>. If the residuals were approximately normal, the black dots would fall close to the straight diagonal line of the Q-Q plot. With thousands of tracts, coefficient estimates are stable, but standard errors may be understated under OLS assumptions. However, the plot bends upwards both in the lower and upper tails. These issues limit the precision of our inference and confidence interval. Additionally, the histogram of residuals (<a href="#fig-pov-histo" class="quarto-xref">Figure&nbsp;5</a>) appears approximately bell-shaped and centered near zero, which supports the assumption that the errors have mean zero. However, the distribution is not perfectly symmetric: the right tail is longer than the left, and there are some extreme positive residuals. This indicates mild right skew and the presence of high-poverty tracts where the model underpredicts. While the residuals do not follow a perfect normal distribution, the large sample size (n = 7906) reduces concerns about inference validity due to the Central Limit Theorem. Nevertheless, the skewness suggests that robust standard errors or a variance-stabilizing transformation (e.g., square-root of the response) might provide more reliable inference in future analyses. Overall though, the non-normality and changes in variance, our 95% confidence interval should only be drawn cautiously, so we might want to consider using more robust standard errors.</p>
+<p><strong>Comparing education and unemployment</strong>: When we added unemployment to the model, it did not meaningfully change the estimated effect of education. The unemployment has a weaker positive association with poverty, but the education coefficient remains consequential. This result challenges a possible assumption that unemployment is a primary driver of poverty. We see from <a href="#fig-pov-other" class="quarto-xref">Figure&nbsp;2</a> that a high percentage of individuals are employed but remain below twice the federal poverty threshold <span class="citation" data-cites="OEHHA2021">California Office of Environmental Health Hazard Assessment (OEHHA) (<a href="#ref-OEHHA2021" role="doc-biblioref">2021b</a>)</span> set. This indicates situations where many individuals are working but still fall below the poverty threshold here. By comparison, educational attainment shows a stronger and more consistent relationship with poverty, which highlights its relevance as a key factor of socioeconomic well-being.</p>
 <p>Generally speaking, the simple linear regression analysis for this research question can only draw questionable inferences, so the linear regression is likely not a full picture of the relationship between education and poverty. With that being said, we did see that the positive correlation in the linear regression model is likely statistically significant due to the p-value and <span class="math inline">\(R^2\)</span> value. Therefore, there is a positive relationship between low education attainment percentage and poverty rate percentage.</p>
 <p><strong>Implications</strong>: We see that the findings support noting education as a factor in determining predictors of poverty in datasets like CalEnviroScreen, which are used to identify communities experiencing socioeconomic and environmental burdens. Policymakers and advocates can use this data to inform investments in education, workforce support, and pollution reduction to advance environmental justice and public health.</p>
 <p><strong>Limitations</strong>: We used cross-sectional, observational data, which limits our causal inferences. The nature of tract-level geographical dependence of the data likely violates the independence assumption. Additionally, the bounded percentage outcomes produce heteroskedasticity. Finally the ACS sampling error introduces measurement error.</p>
 <p>On a broader level, a limitation of our analysis is the definition of poverty. CalEnviroScreen uses 200% of the federal poverty level (FPL) to account for California’s high cost of living. This is a more appropriate benchmark than the unadjusted FPL, it does not capture wide regional differences within the state. For example, housing costs in the Bay Area vs rural areas of California have a large range. Consequently, the same income threshold may reflect very different levels of economic hardship depending on location. This limitation means that our poverty measure may overstate poverty in some rural areas and understate it in high-cost metropolitan regions, which could feasibly introduce additional variation not explained by education or unemployment in our models. Another limitation is that the education measure applies only to adults aged 25 and older, but the poverty measure covers the entire population. This mismatch means that our predictor and outcome are not measured on exactly the same group. For example, tracts with many children in poverty but relatively well-educated adults could weaken the observed association. On the other side, tracts with low adult education may experience higher poverty rates even among children and elderly residents who are not part of the education measure. This difference in denominators introduces another possible measurement error into our regression.</p>
 </section>
-<section id="references" class="level1 unnumbered">
-
-
-</section>
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-OEHHA_MapsData" class="csl-entry" role="listitem">
 California Office of Environmental Health Hazard Assessment (OEHHA). 2021a. <span>“CalEnviroScreen 4.0: Maps &amp; Data.”</span> California Environmental Protection Agency. <a href="https://oehha.ca.gov/calenviroscreen/maps-data">https://oehha.ca.gov/calenviroscreen/maps-data</a>.
 </div>
@@ -345,22 +348,46 @@ California Office of Environmental Health Hazard Assessment (OEHHA). 2021a. <spa
 <div id="ref-cutler2006education" class="csl-entry" role="listitem">
 Cutler, David M., and Adriana Lleras-Muney. 2006. <span>“Education and Health: Evaluating Theories and Evidence.”</span> <em>NBER Working Paper Series</em>, no. 12352. <a href="https://www.nber.org/papers/w12352">https://www.nber.org/papers/w12352</a>.
 </div>
+<div id="ref-gelman_regression_2021" class="csl-entry" role="listitem">
+Gelman, Andrew, Jennifer Hill, and Aki Vehtari. 2021. <em>Regression and <span>Other</span> <span>Stories</span></em>. Cambridge University Press.
+</div>
+<div id="ref-kutner2005" class="csl-entry" role="listitem">
+Kutner, Michael H., Christopher J. Nachtsheim, John Neter, and William Li. 2005. <em>Applied Linear Statistical Models</em>. 5th ed. New York: McGraw-Hill/Irwin.
+</div>
+<div id="ref-morello2006environmental" class="csl-entry" role="listitem">
+Morello-Frosch, Rachel, and Edmond D. Shenassa. 2006. <span>“Environmental Justice and the Distribution of Pollution: The Case of California’s Central Valley.”</span> <em>Environmental Health Perspectives</em> 114 (12): 1810–17. <a href="https://doi.org/10.1289/ehp.9310">https://doi.org/10.1289/ehp.9310</a>.
+</div>
+<div id="ref-qqplotr" class="csl-entry" role="listitem">
+Nascimento, Luis Augusto Perdigão do. 2019. <em>Qqplotr: Quantile-Quantile Plots for Ggplot2</em>. <a href="https://CRAN.R-project.org/package=qqplotr">https://CRAN.R-project.org/package=qqplotr</a>.
+</div>
 <div id="ref-oehha_calenviroscreen_dataset" class="csl-entry" role="listitem">
-Office of Environmental Health Hazard Assessment (OEHHA). n.d. <span>“CalEnviroScreen Data Hub.”</span> n.d. <a href="https://calenviroscreen-oehha.hub.arcgis.com/#Data">https://calenviroscreen-oehha.hub.arcgis.com/#Data</a>.
+Office of Environmental Health Hazard Assessment (OEHHA). 2021. <span>“CalEnviroScreen Data Hub.”</span> <a href="https://calenviroscreen-oehha.hub.arcgis.com/#Data">https://calenviroscreen-oehha.hub.arcgis.com/#Data</a>.
 </div>
 <div id="ref-R2024" class="csl-entry" role="listitem">
 R Core Team. 2024. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
 </div>
+<div id="ref-robinson2014broom" class="csl-entry" role="listitem">
+Robinson, David. 2014. <span>“Broom: An r Package for Converting Statistical Analysis Objects into Tidy Data Frames.”</span> <em>arXiv Preprint arXiv:1412.3565</em>. <a href="https://arxiv.org/abs/1412.3565">https://arxiv.org/abs/1412.3565</a>.
+</div>
 <div id="ref-census_portal" class="csl-entry" role="listitem">
-U.S. Census Bureau. n.d. <span>“Data.census.gov.”</span> n.d. <a href="https://data.census.gov/cedsci/">https://data.census.gov/cedsci/</a>.
+U.S. Census Bureau. n.d. <span>“Data.census.gov.”</span> <a href="https://data.census.gov/cedsci/">https://data.census.gov/cedsci/</a>.
 </div>
 <div id="ref-acs_tech" class="csl-entry" role="listitem">
-———. 2014. <em>American Community Survey Design and Methodology Report</em>. <a href="https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/acs_design_methodology_ch12_2014.pdf">https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/acs_design_methodology_ch12_2014.pdf</a>.
+———. 2014. <span>“American Community Survey Design and Methodology Report.”</span> <a href="https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/acs_design_methodology_ch12_2014.pdf">https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/acs_design_methodology_ch12_2014.pdf</a>.
+</div>
+<div id="ref-Wickham2016" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <em>Ggplot2: Elegant Graphics for Data Analysis</em>. New York: Springer.
+</div>
+<div id="ref-scales" class="csl-entry" role="listitem">
+Wickham, Hadley, and Dana Seidel. 2022. <em>Scales: Scale Functions for Visualization</em>. <a href="https://CRAN.R-project.org/package=scales">https://CRAN.R-project.org/package=scales</a>.
 </div>
 <div id="ref-zajacova2018" class="csl-entry" role="listitem">
 Zajacova, Anna, and Elizabeth M. Lawrence. 2018. <span>“Education and Health: The Casual Association and Challenges.”</span> <em>Annual Review of Public Health</em> 39: 273–89. <a href="https://doi.org/10.1146/annurev-publhealth-031816-044628">https://doi.org/10.1146/annurev-publhealth-031816-044628</a>.
 </div>
-</div></section></div></main>
+</div>
+</section>
+
+</main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
