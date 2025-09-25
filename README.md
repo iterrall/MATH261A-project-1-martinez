@@ -8,10 +8,15 @@ This project fits a simple linear regression of census-tract poverty on low educ
 
 ## Repository structure
 ├── data/
+
 │ └── CalEnviroScreen_4.0_raw_data.csv
+
 ├── report.qmd
+
 ├── references.bib
+
 ├── apa.csl
+
 └── README.md
 
 ## Data 
