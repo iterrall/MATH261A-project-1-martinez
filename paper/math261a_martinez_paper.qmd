@@ -15,7 +15,7 @@ execute:
   include: true
   fig-width: 4    # default width (in inches)
   fig-height: 3   # default height (in inches)
-abstract: "We investigate the relationship between low educational attainment and poverty across California communities by using data from CalEnviroScreen 4.0, which is a statewide screening tool developed by the California Office of Environmental Health Hazard Assessment (OEHHA) that uses 2019 census-tract location data. We use simple linear regression to model census-tract poverty rates as a function of percentage of adults living without a high school diploma, and present a supplemental model that additionally includes unemployment. The primary model will show that each percent increase in adults without a high school diploma per census-tract is associated with an average increase of .97% in poverty rate in a the same area. The model explains about 61.6% of tract-level variation in poverty, and is only minimally impacted when accounting for unemployment. This report will also diagnostic of the model that indicate heteroskedasticity and non-normal residuals, so we interpret interval estimates with caution. CalEnviroScreen is a powerful tool for addressing historical and continued inequality. By linking socioeconomic factors such as educational attainment with poverty, our analysis illustrates how the tool can inform priorities when seeking to mitigate socioeconomic disparities."
+abstract: "We analyze the relationship between educational attainment and poverty in California with CalEnviroScreen 4.0, which is a statewide screening tool developed by the Office of Environmental Health Hazard Assessment (OEHHA). With a simple linear regression of census-tract location poverty rates on the percentage of adults without a high school diploma, we show that each one-point increase in low educational attainment is associated with an increase in poverty rate. This model shows about 61.6% of California tract-level variation in poverty, and is only minimally impacted when accounting for unemployment. This report will also share diagnostics of the model that indicate a lack of residual normality and variance constancy, so we interpret interval estimates with caution. These findings highlight the value of CalEnviroScreen for identifying socioeconomic vulnerability and informing policies aimed at reducing poverty and inequality."
 output: 
   pdf_document:
     latex_engine: xelatex
@@ -150,8 +150,6 @@ $$Y_i = \beta_0 + \beta_1X_i + \varepsilon_i \text{ for }i=1,...,n$$
 where $\beta_0$ (the intercept) represents the expected poverty rate in a census tract when $X_i=0$, or when 0% of the adult population is living without a high school diploma. Additionally, $\beta_1$ represents the marginal change in poverty (percentage points) for one point increase in $X_i$, or
 adults without a high school diploma. Finally, $\varepsilon_i$ denotes a random error term that encapsulates unobserved factors that impact poverty rates not explained by low-educational attainment percentage. In other words, we estimate a simple linear regression pov =$\beta_0 + \beta_1$(edu) + $\varepsilon$ using OLS in R [@R2024; @gelman_regression_2021; @kutner2005]. 
 
-In our data (number of tracts = `r n_obs`), the estimated intercept is $\hat{\beta_0}$= `r round(intercept, 3)` and estimated slope is $\hat{\beta_1}$=`r round(slope, 3)`. In a supplementary model including unemployment, the fitted slope for education is with number of tracts equaling `r n_obs2` , the estimated intercept is $\hat{\beta_0}=$ `r round(intercept2, 3)` and estimated slope is $\hat{\beta_1}=$ `r round(slope2, 3)` with $R^2$ = `r round(r22,3)`.
-
 The parameters of the model ($\beta_0$ and $\beta_1$) are estimated using ordinary least squares, or OLS. We estimate parameters with ordinary least squares (OLS) with R (version 4.5.1) [@R2024; @kutner2005] using the built-in lm() function, which fits linear regression models by OLS. The basic syntax is lm(response \~ predictor, data = dataset), and in our case the function lm(pov \~ edu, data = to_analyze_df). This instructs R to regress the poverty rate (pov) on the percentage of adults without a high school diploma (edu) using the dataset that we have turned into a cleaned dataframe that omits null values. Here, pov is the response variable (dependent variable),edu is the predictor variable (independent variable), and the \~ operator indicates the model formula, meaning "pov" is modeled as a function of "edu". The function estimates the intercept $\beta_0$ and slope $\beta_1$ by minimizing the sum of squared residuals. By default, lm() returns a model object that contains the estimated coefficients, residuals, fitted values, and summary statistics, which we accessed using functions such as summary() and coef().
 
 To assess model fit, we report the estimated regression coefficients, standard errors, and coefficient of determination ($R^2$), and the associated confidence interval with our the correlation. We also present a scatterplot (@fig-pov-scatter)of the data with the fitted regression line and a confidence band, which provides a visual assessment of model fit. As a robustness check, we fit a supplemental multiple linear regression including unemployment:
@@ -167,7 +165,6 @@ For this OLS, we adopt the standard assumptions of the linear regression model:
 **2. Independence of errors**: The error terms $\varepsilon_i$ are independent between different census tracts. 
 
 **3. Constant variance**: the error terms have constant variance across values of $X_i$ (the low-educational attainment rate for  census tract $i$). 
-
 **4. Normality of residuals**: the residuals are approximately normally distributed, meaning the error terms have a mean of zero and are normally distributed.
 
 Because rates are bounded between 0 and 100, having a constant variance is unlikely. Therefore, we complete the following diagnostics and note implications for inference to evaluate whether the model comply with the assumptions of linear regression:
@@ -179,10 +176,13 @@ Because rates are bounded between 0 and 100, having a constant variance is unlik
 We conducted all analyses R [@R2024], and regression models were estimated using the base R function `lm()`. The model summaries and tidy coefficient tables were generated with the `broom` package [@robinson2014broom]. We used dplyr [@Wickham2016] (part of the tidyverse) to clean the raw data, and we formatted tables with @Xie2015.We produced visualizations with `ggplot2` [@Wickham2016], with additional support from `scales` @scales for scaling and @qqplotr for Q–Q plotting. Together, these packages helped us create data cleaning, regression modeling, and visualization that can be reproducible.
 
 # Results {#sec-results}
+
 The simple linear regression of poverty level on education yields the following fitted model:
 
 $\widehat{pov}=$ `r round(intercept,3)` $+$ `r round(slope,3)`
-$\times(edu)$ with $R^2=$ `r round(r2,3)` and number of tracts = `r n_obs`. 
+$\times(edu)$ with $R^2=$ `r round(r2,3)` and number of tracts = `r n_obs`.
+
+In our data (number of tracts = `r n_obs`), the estimated intercept is $\hat{\beta_0}$= `r round(intercept, 3)` and estimated slope is $\hat{\beta_1}$=`r round(slope, 3)`. In a supplementary model including unemployment, the fitted slope for education is with number of tracts equaling `r n_obs2` , the estimated intercept is $\hat{\beta_0}=$ `r round(intercept2, 3)` and estimated slope is $\hat{\beta_1}=$ `r round(slope2, 3)` with $R^2$ = `r round(r22,3)`.
 
 **Here is our interpretation of the coefficients**:
 
