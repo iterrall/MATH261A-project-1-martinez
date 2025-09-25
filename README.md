@@ -7,17 +7,7 @@ Project repository for MATH 261A project 1.
 This project fits a simple linear regression of census-tract poverty on low educational attainment using CalEnviroScreen/ACS data, plus a supplemental model including unemployment.
 
 ## Repository structure
-├── data/
 
-│ └── CalEnviroScreen_4.0_raw_data.csv
-
-├── report.qmd
-
-├── references.bib
-
-├── apa.csl
-
-└── README.md
 
 ## Data 
 Data used in this project is obtained from [CalEnviroScreen Data Hub](https://calenviroscreen-oehha.hub.arcgis.com/#Data). This data is released into the public domain by the California Office of Environmental Health Hazard Assessment (OEHHA). CalEnviroScreen 4.0 documentation and metadata from OEHHA. As public domain data, it has no copyright restrictions and can be used freely for any purpose, including commercial use.
