@@ -15,7 +15,7 @@ execute:
   include: true
   fig-width: 4    # default width (in inches)
   fig-height: 3   # default height (in inches)
-abstract: "We investigate the relationship between educational attainment and poverty rates in California using CalEnviroScreen 4.0 census-tract data. A simple linear regression of poverty rates on the percentage of adults without a high school diploma, shows that each one-percent increase in low educational attainment is associated with an approximate 0.98-point increase in poverty rate. A supplemental model including unemployment shows only a minimal improvement in explanatory power, with education remaining the highest predictor that we explored. While diagnostic tests suggest violations of normality and variance constancy, the results can highlight the role that education plays in shaping socioeconomic vulnerability. These findings emphasizes the potential for targeted education policies to reduce poverty disparities across California communities."
+abstract: "We investigate the relationship between educational attainment and poverty rates in California using CalEnviroScreen 4.0 census-tract data. A simple linear regression of poverty rates on the percentage of adults without a high school diploma, shows that each one-percent increase in low educational attainment is associated with an average 0.98-percentage point poverty level increase. A supplemental model including unemployment shows only a minimal improvement in explanatory power, with education remaining the highest predictor that we explored. While diagnostic tests suggest violations of normality and variance constancy, the results can highlight the role that education plays in shaping socioeconomic vulnerability. These findings emphasizes the potential for targeted education policies to reduce poverty disparities across California communities."
 bibliography: references.bib
 body-footer: Math 261A - Regression Theory and Methods | Fall 2025 Project 1
 
@@ -32,10 +32,10 @@ library(knitr)
 library(glue)
 
 #load data
-raw_data <- read.csv("CalEnviroScreen_4.0_raw_data.csv")
+ces_df <- read.csv("CalEnviroScreen_4.0_data.csv") #CalEnviroScreen (ces) dataframe
 
 #coerce to numeric & drop NAs
-to_analyze_df_3vars <- raw_data %>%
+df_3vars <- ces_df %>%
   transmute(
     pov = suppressWarnings(as.numeric(pov)),
     edu = suppressWarnings(as.numeric(edu)),
@@ -43,7 +43,7 @@ to_analyze_df_3vars <- raw_data %>%
   ) %>%
   filter(!is.na(pov), !is.na(edu), !is.na(unemp))
 
-to_analyze_df <- raw_data %>%
+to_analyze_df <- ces_df %>%
 transmute(
   pov = suppressWarnings(as.numeric(pov)),
   edu = suppressWarnings(as.numeric(edu))) %>%
@@ -70,7 +70,7 @@ theme_update(
 #### Models #### 
 set.seed(123) 
 lm_fit <- lm(pov ~ edu, data=to_analyze_df) #predictor (x): edu, outcome (y): pov; simple linear regression (primary)
-lm_fit2 <- lm(pov ~ edu + unemp, data=to_analyze_df_3vars) #predictor (x): edu, outcome (y): pov, for model with unemployment included 
+lm_fit2 <- lm(pov ~ edu + unemp, data=df_3vars) #predictor (x): edu, outcome (y): pov, for model with unemployment included 
 
 # vars for inline references
 n_obs    <- nobs(lm_fit)
@@ -91,18 +91,18 @@ r22 <- summary(lm_fit2)$r.squared
 
 # Descriptive stats table
 summ_tbl <- bind_rows(
-to_analyze_df_3vars %>% summarize(
-variable = "pov",
+df_3vars %>% summarize(
+variable = "Poverty rate (total census population)",
 mean = mean(pov), sd = sd(pov), min = min(pov), p25 = quantile(pov, .25),
 median = median(pov), p75 = quantile(pov, .75), max = max(pov), n = n()
 ),
-to_analyze_df_3vars %>% summarize(
-variable = "edu",
+df_3vars %>% summarize(
+variable = "Low Education Rate (adults 25+ years old)",
 mean = mean(edu), sd = sd(edu), min = min(edu), p25 = quantile(edu, .25),
 median = median(edu), p75 = quantile(edu, .75), max = max(edu), n = n()
 ),
-to_analyze_df_3vars %>% summarize(
-variable = "unemp",
+df_3vars %>% summarize(
+variable = "Unemployment Rate (labor force)",
 mean = mean(unemp), sd = sd(unemp), min = min(unemp), p25 = quantile(unemp, .25),
 median = median(unemp), p75 = quantile(unemp, .75), max = max(unemp), n = n()
 )
@@ -111,26 +111,26 @@ median = median(unemp), p75 = quantile(unemp, .75), max = max(unemp), n = n()
 # Introduction {#sec-intro}
 The link between educational attainment to socioeconomic well-being has been widely corroborated in research (for example, @cutler2006education and @zajacova2018). The persistent geographic inequities California faces drives the need for us to take a closer look at how education relates to poverty when related to location. Therefore, using the CalEnviroScreen 4.0 dataset, [@oehha_calenviroscreen_dataset], we ask the following question in this project: **To what extent is tract-level poverty associated with low levels of education in California?**
 
-While its primary focus is to better understand and address environmental concerns in California communities, we can learn a great deal from the raw data that can be found on the CalEnviroScreen Data Hub [@oehha_calenviroscreen_dataset] about possible socioeconomic well-being predictors and outcomes. There is a wealth of information around geospatial data that can be used to drive more equitable decision-making by exploring possible factors that play a role in changes to poverty levels. Understanding this question can be an important way to learn poverty disparity mitigation techniques within communities to improve health, since low socioeconomic status has been tied to multiple environmental risks and health disparities [@OEHHA2021, @morello2006environmental].
+While its primary focus is to better understand and address environmental concerns in California communities, we can learn a great deal from the CalEnviroScreen data about possible socioeconomic well-being predictors and outcomes [@oehha_calenviroscreen_dataset]. There is a wealth of information around geospatial data that can be used to drive more equitable decision-making by exploring possible factors that play a role in changes to poverty levels. Understanding this question can be an important way to learn poverty disparity mitigation techniques within communities to improve health, since low socioeconomic status has been tied to multiple environmental risks and health disparities [@OEHHA2021, @morello2006environmental].
 
 We address this question by fitting a simple linear regression by taking poverty rate as a function of percentage of adults lacking a high school diploma. We then extend the analysis by exploring the contribution of unemployment makes on the model and examining the robustness of linear regression model assumptions.
 
 The remainder of this paper is structured as follows: @sec-data discusses the data, @sec-methods the model and the methods we used, @sec-results presents the results, and @sec-discussion discusses the conclusions in addition to weaknesses with the conclusions from this model.
 
 # Data {#sec-data}
-We use California census tracts (locations) as our observational, as they serve as small, relatively stable geographic areas defined by the @acs_census. We used this data that was compiled in the **CalEnviroScreen 4.0** [@OEHHA2021], which is a statewide screening tool that compiles socioeconomic, health, and environmental indicators to support policy and business decisions. 
+We use California census tracts (locations) as our observational units, as they serve as small, relatively stable geographic areas defined by the @acs_census. We used this data that was compiled in the **CalEnviroScreen 4.0** [@OEHHA2021], which is a statewide screening tool that compiles socioeconomic, health, and environmental indicators to support policy and business decisions. 
 
 We focus on the following socioeconomic measures drawn from the American Community Survey (@acs_census, 2015–2019 5-year estimates) for this analysis [@OEHHA2021] from the CalEnviroScreen that was published in 2021 [@oehha_calenviroscreen_dataset]:
 
-* **Poverty (pov)**: Percent of the tract population living below twice the federal poverty level (FPL). Using 200% of the FPL helps account for California's high cost of living [@oehha_calenviroscreen_dataset; @census_portal].
+* **Poverty** is defined in this project as the percent of the tract population living below twice the federal poverty level (FPL). Using 200% of the FPL helps account for California's high cost of living [@oehha_calenviroscreen_dataset; @census_portal].
 
-* **Education (edu)**: Percent of adults age 25 years and older without a high school diploma, which was derived as 100 minus the share of adults with at least a diploma [@acs_census; @census_portal].
+* **Education** represents the percentage of adults age 25 years and older without a high school diploma, which was derived as 100 minus the share of adults with at least a diploma [@acs_census; @census_portal].
 
 * **Unemployment (unemp)**: Percent of the labor force that is unemployed.
 
 All variables are percentages in between 0 and 100, so we interpret coefficients as percentage-point changes. This means they represent expected changes in poverty rate per one-point percentage change in education (and employment in our supplementary model).
 
-Before analysis, we removed tracts with missing values that were flagged as unreliable by OEHHA based on ACS standard error screening. After cleaning the raw data with @dplyr, the dataset contained `r n_obs` tracts for the primary model and `r n_obs2` for the supplemental model including unemployment.
+Before analysis, we removed tracts with missing values that were flagged as unreliable by OEHHA based on ACS standard error screening. After cleaning the CalEnviroScreen data with @dplyr, the dataset contained `r n_obs` tracts for the primary model and `r n_obs2` for the supplemental model including unemployment.
 
 ```{r tbl-summ}
 library(kableExtra)
@@ -148,7 +148,7 @@ We note the **descriptive summaries** in the table @tbl-summ that we created usi
 ```{r}
 # correlation matrix for the key variables 
 cor_tbl <- cor(
-  to_analyze_df_3vars[, c("pov", "edu", "unemp")],
+  df_3vars[, c("pov", "edu", "unemp")],
   use = "pairwise.complete.obs"
 )
 ```
@@ -192,7 +192,7 @@ We completed **model validation** and fit by evaluating $R^2$, $p$-values, and d
 
 1. **Linearity**: a straight line @fig-pov-scatter and @fig-pov-resids suggest linearity between the predictor educational attainment and the outcome poverty.
 
-2. **Independence of errors**: @fig-pov-resids suggests independence if there is an even spread of points, while any clustering or patterns of the points would indicate a lack of independence between errors across census tracts
+2. **Independence of errors**: @fig-pov-resids suggests independence if there is an even spread of points, while any clustering or patterns of the points would indicate a lack of independence between errors across census tracts.
 
 3. **Constant variance**: consistent spread of points in @fig-pov-resids provide evidence of constant variance of error terms across values of $X_i$, while any funneling of the points suggest a violation of this assumption.
 
@@ -272,7 +272,7 @@ Additionally, we share a supplemental model with unemployment included to measur
 
 #plot for scatter with unemp included as color only
 
-ggplot(to_analyze_df_3vars, aes(edu, pov, color = unemp)) +
+ggplot(df_3vars, aes(edu, pov, color = unemp)) +
   geom_point(alpha = 0.55, size = 0.45) +
   scale_color_viridis_c(name = "Unemployment (%)", option = "plasma") +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
