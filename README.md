@@ -32,8 +32,8 @@ OEHHA obtained the data used in the project from the American Community Survey (
 As public domain data, both datasets have no copyright restrictions and can be used freely for any purpose, including commercial use.
 
 ## How to reproduce
-Download CalEnviroScreen_4.0_raw_data.csv found [here](https://calenviroscreen-oehha.hub.arcgis.com/#Data) in data/.
-Open report.qmd and render to PDF: Quarto then Render. Requires R (≥ 4.0), open math261a_martinez_paper.qmd in RStudio and render it to PDF. From there, ensure you have the packages listed in the first R chunk and then click Quarto → Render.
+Download CalEnviroScreen_4.0_raw_data.csv found [here](https://calenviroscreen-oehha.hub.arcgis.com/#Data) or in data/ of this repository.
+Open report.qmd and render to PDF: Quarto then Render: this requires R (≥ 4.0), open math261a_martinez_paper.qmd in RStudio and render it to PDF. Before rendering, ensure you have the packages listed in the first R chunk and then click Quarto → Render.
 
 ## External Resources
 The final report and code were written by Isis Terrall Martinez, but the following resources were used for preliminary research:

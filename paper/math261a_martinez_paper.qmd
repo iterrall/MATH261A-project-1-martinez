@@ -1,6 +1,6 @@
 ---
-title: "Linking Education, Unemployment, and Poverty"
-subtitle: "Insights from California's CalEnviroScreen Data"
+title: "Mind the Education Gap: Mapping Poverty Predictions Across California’s Communities"
+subtitle: "A Regression Analysis Using CalEnviroScreen Data"
 author: "Isis Martinez"
 thanks: "Project repository available at: [https://github.com/iterrall/MATH261A-project-1-martinez](https://github.com/iterrall/MATH261A-project-1-martinez)."
 date: today
@@ -15,7 +15,7 @@ execute:
   include: true
   fig-width: 4    # default width (in inches)
   fig-height: 3   # default height (in inches)
-abstract: "We investigate the relationship between educational attainment and poverty rates in California using CalEnviroScreen 4.0 census-tract data compiled by the Office of Environmental Health Hazard Assessment (OEHHA). A simple linear regression of poverty rates on the percentage of adults without a high school diploma, shows that each one-percent increase in low educational attainment is associated with an average 0.98-percentage point poverty level increase. A supplemental model including unemployment shows only a minimal improvement in explanatory power, with education remaining the highest predictor that we explored. While diagnostic tests suggest violations of normality and variance constancy, the results can highlight the role that education plays in shaping socioeconomic vulnerability. These findings emphasizes the potential for targeted education policies to reduce poverty disparities across California communities."
+abstract: "We investigate the relationship between educational attainment and poverty rates in California using CalEnviroScreen 4.0 census-tract data compiled by the Office of Environmental Health Hazard Assessment (OEHHA). A simple linear regression of poverty rates on the percentage of adults without a high school diploma shows that each one-percent increase in low educational attainment is associated with an average 0.98-percentage point poverty level increase. A supplemental model including unemployment shows only a minimal improvement in explanatory power, with education remaining the highest predictor explored. While diagnostic tests suggest violations of normality and variance constancy, the results can highlight the role that education plays in shaping socioeconomic vulnerability. These findings emphasize the potential for targeted education policies to reduce poverty disparities across California communities."
 bibliography: references.bib
 body-footer: Math 261A - Regression Theory and Methods | Fall 2025 Project 1
 
@@ -252,7 +252,7 @@ Together, these methods helped us create data cleaning, regression modeling, and
 # Results {#sec-results}
 The simple linear regression of poverty level on education yields the following fitted model:
 
-$\widehat{pov}=\hat{\beta_0} + \hat{\beta_0} \times$ (Low Education) = `r round(intercept,3)` + `r round(slope,3)` $\times$ (Low Education)$
+$\widehat{pov}=\hat{\beta_0} + \hat{\beta_0} \times$ (Low Education) = `r round(intercept,3)` + `r round(slope,3)` $\times$ (Low Education)
 
 where $\hat\beta_0$ is the estimated intercept parameter and $\hat\beta_1$ is the estimated slope parameter. In other words, for a tract with 0% of its adults lacking at least a high school diploma, this model would predict an average tract poverty rate of `r paste0(round(intercept, 2), "%")`. The estimated slope $\hat{\beta_1} \approx$ `r round(slope,3)`, indicating a predicted average `r paste0(round(slope, 2), "%")` increase in tract poverty rate for one-percent increase in adults without a high-school diploma. The model explains approximately `r paste0(round(r2 * 100, 2), "%")` of the variation in poverty rates across census tracts ($R^2\approx$ `r round(r2,3)`).
 
