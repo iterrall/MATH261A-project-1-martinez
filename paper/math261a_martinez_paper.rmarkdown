@@ -20,6 +20,7 @@ bibliography: references.bib
 body-footer: Math 261A - Regression Theory and Methods | Fall 2025 Project 1
 
 ---
+
 ```{r, include=FALSE}
 #libraries
 library(dplyr)
@@ -132,6 +133,8 @@ summ_tbl_fmt <- summ_tbl |>
   )
 
 ```
+
+
 # Introduction {#sec-intro}
 The link between educational attainment to socioeconomic well-being has been widely documented in prior research (for example, @cutler2006education and @zajacova2018).
 
@@ -161,6 +164,8 @@ We imported with the readr package [@readr; @R2024] and cleaned the CalEnviroScr
 We note the **descriptive summaries** in the table @tbl-summ that we created using the dplyr, kableExtra, and knitr packages [@dplyr; @Xie2015]. Across `r n_obs2` tracts, the average poverty rate is `r sprintf('%.1f%%', summ_tbl$Mean[summ_tbl$Variable == "Poverty"])`, ranging from `r sprintf('%.1f%%', summ_tbl$Min[summ_tbl$Variable == "Poverty"])`
  to `r sprintf('%.1f%%', summ_tbl$Max[summ_tbl$Variable == "Poverty"])`. The average share of adults (25+) without a high school diploma is `r sprintf('%.1f%%', summ_tbl$Mean[summ_tbl$Variable == "Low Education"])`, with some tracts as high as `r sprintf('%.1f%%', summ_tbl$Max[summ_tbl$Variable == "Low Education"])`. The unemployment rate averages `r sprintf('%.1f%%', summ_tbl$Mean[summ_tbl$Variable == "Unemployment"])` and can reach 
 `r sprintf('%.1f%%', summ_tbl$Max[summ_tbl$Variable == "Unemployment"])`. These wide ranges highlight high variability across communities.
+
+
 
 ```{r tbl-summ}
 library(kableExtra)
@@ -192,6 +197,8 @@ cor_tbl <- cor(
   use = "pairwise.complete.obs"
 )
 ```
+
+
 We also calculated Pearson correlation coefficients among the key variables using stats::cor() [@R2024]. 
 Poverty is strongly correlated with low educational attainment 
 (r $\approx$ `r round(cor_tbl["pov", "edu"], 2)`), and moderately correlated with unemployment 
@@ -259,6 +266,8 @@ $\times(edu)$ with $R^2=$ `r round(r2,3)` and number of tracts = `r n_obs`.
 
 With a sample size of `r n_obs` tracts, the intercept $\hat{\beta_0} \approx$ `r round(intercept,3)`. Therefore, for a tract with 0% of its adults lacking at least a high school diploma, this model would predict an average tract poverty rate of `r paste0(round(intercept, 2), "%")`. The estimated slope $\hat{\beta_1} \approx$ `r round(slope,3)`, indicating a predicted average `r paste0(round(slope, 2), "%")` increase in tract poverty rate for one-percent increase in adults without a high-school diploma in that tract. The model fit $R^2=$ `r round(r2, 2)`, so about `r paste0(round(r2 * 100, 2), "%")` of the variation in the poverty rate we are measuring is explained by low-education attainment percentage within a census-tract. The estimated effect of education appears to be statistically significant ($p<0.001$), which provides evidence of a positive association between low education attainment and higher poverty rates.
 
+
+
 ```{r fig-pov-scatter}
 #| fig-width: 5.25 #override to make bigger
 #| fig-height: 3.2
@@ -279,11 +288,15 @@ ggplot(to_analyze_df, aes(edu, pov)) +
     caption = "Source: ACS 2015–2019; CalEnviroScreen 4.0"
   )
 ```
+
+
 To formally evaluate whether education is associated with poverty we conduct a t-test for the slope coefficient. Let our type I error rate be $\alpha = 0.05$. Let us test the following hypotheses: $H_0$: $\beta_1 = 0$ (no relationship between education and poverty) vs. $H_a$: $\beta_1 \neq 0$. The t-test for the education coefficient yields a large test statistic ($t \approx 113$) with a p-value `r format.pval(p_val, digits = 3)` ($p < 0.001$) [@robinson2014broom]. The p-value shows that the observed data is not more extreme than common rejection region thresholds like $<\alpha=0.05$, we reject the null hypothesis and conclude that low educational attainment is associated with higher tract-level poverty rates. 
 
 From our model, we find that the 95% confidence interval (CI) for the education slope is approximately `r paste0("[", round(confint(lm_fit)[2,1], 5), ", ", round(confint(lm_fit)[2,2], 5), "]")`. This means that if we were to repeat this study many times using different random samples, about 95% of those intervals would contain the true value of the slope. In other words, we are 95% confident that for each percentage point increase in adults without a high school diploma, the poverty rate of the same census tract will increase between approximately `r round(confint(lm_fit)[2,1], 4)` and `r round(confint(lm_fit)[2,2], 4)` percentage points. 
 
 We assess the reliability of our inferences for our primary simple regression with our diagnostic checks in @fig-pov-scatter, @fig-pov-resids, @fig-pov-histo, and @fig-pov-qq. The residuals versus fitted plot shows curvature and clustering which indicates some unequal variances. The residuals histogram appears roughly bell-shaped, but its skew and the Q-Q plots's tail deviations indicate a deviation from error normality.
+
+
 ```{r fig-pov-resids}
 #| fig-cap: "Residuals vs. fitted values for the simple OLS (poverty ~ education). Each point shows how much the model’s prediction differs from the actual poverty rate for each census tract. The curved purple line shows the general trend in these residuals. While the points are mostly centered around zero, the curve bends upward and then downward, suggesting the model may not fit all values equally well and that the spread of errors changes across fitted values."
 resid_df <- data.frame(.fitted = fitted(lm_fit), .resid = resid(lm_fit))
@@ -293,11 +306,13 @@ ggplot(resid_df, aes(.fitted, .resid)) +
   geom_smooth(method = "loess", se = FALSE, color = "purple") +
   labs(x = "Fitted values", y = "Residuals", title = "Residuals vs Fitted")
 ```
+
 ```{r fig-pov-qq}
 #| fig-cap: "Normal Q–Q plot of residuals. Points near the line indicate approximate normality; curvature indicates deviations from normality."
 qqnorm(resid(lm_fit), main = "Normal Q–Q plot (residuals)")
 qqline(resid(lm_fit))
 ```
+
 ```{r fig-pov-histo}
 #| fig-cap: "Histogram of residuals. A roughly bell-shaped, symmetric distribution supports the normal-errors assumption, skew indicates deviations from normality."
 
@@ -306,7 +321,11 @@ ggplot(data.frame(res = resid(lm_fit)), aes(x = res)) +
   labs(x = "Residual", y = "Count", title = "Histogram of Residuals")
 ```
 
+
+
 Additionally, we share a supplemental model with unemployment included to measure if another factor changes our results, which shows a similar effect ($\beta_1$ = `r round(slope2, 3)`) and a slightly higher $R^2 =$ `r round(r22,3)`. @fig-pov-other visualizes this relationship by showing education remains a predictor of poverty even when controlling for unemployment. This suggests that differences in unemployment rates across tracts do not account for most of the variation in poverty once educational attainment is considered.
+
+
 
 ```{r fig-pov-other}
 #| fig-width: 5.25 
@@ -331,6 +350,8 @@ ggplot(df_3vars, aes(edu, pov, color = unemp)) +
   guides(color = guide_colorbar(barheight = unit(40, "pt")))
 ```
 
+
+
 # Discussion{#sec-discussion}
 **Summary**: The regression results (@sec-results) show positive relationship between educational attainment and poverty. This model predicts that census tracts with higher percentages of adults without high school diplomas tend to experience higher rates of poverty. While unemployment is also positively correlated with poverty, its effect shows to be weaker than that of education. These findings share the importance of education as a key factor in community socioeconomic well-being.
 
@@ -352,3 +373,4 @@ Additionally, the education measure applies only to adults aged 25 and older, bu
 
 # References
 ::: {#refs} :::
+
